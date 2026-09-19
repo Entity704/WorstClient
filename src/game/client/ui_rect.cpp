@@ -6,10 +6,12 @@
 
 IGraphics *CUIRect::ms_pGraphics = nullptr;
 
+constexpr float ShakeStrength = 0.5f;
+
 void CUIRect::HSplitMid(CUIRect *pTop, CUIRect *pBottom, float Spacing) const
 {
 	CUIRect r = *this;
-	const float Cut = r.h / 2;
+	const float Cut = r.h / 2 + random_float(-ShakeStrength, ShakeStrength);
 	const float HalfSpacing = Spacing / 2;
 
 	if(pTop)
@@ -33,6 +35,8 @@ void CUIRect::HSplitTop(float Cut, CUIRect *pTop, CUIRect *pBottom) const
 {
 	CUIRect r = *this;
 
+	Cut += random_float(-ShakeStrength, ShakeStrength);
+
 	if(pTop)
 	{
 		pTop->x = r.x;
@@ -54,6 +58,8 @@ void CUIRect::HSplitBottom(float Cut, CUIRect *pTop, CUIRect *pBottom) const
 {
 	CUIRect r = *this;
 
+	Cut += random_float(-ShakeStrength, ShakeStrength);
+
 	if(pTop)
 	{
 		pTop->x = r.x;
@@ -74,7 +80,7 @@ void CUIRect::HSplitBottom(float Cut, CUIRect *pTop, CUIRect *pBottom) const
 void CUIRect::VSplitMid(CUIRect *pLeft, CUIRect *pRight, float Spacing) const
 {
 	CUIRect r = *this;
-	const float Cut = r.w / 2;
+	const float Cut = r.w / 2 + random_float(-ShakeStrength, ShakeStrength);
 	const float HalfSpacing = Spacing / 2;
 
 	if(pLeft)
@@ -98,6 +104,8 @@ void CUIRect::VSplitLeft(float Cut, CUIRect *pLeft, CUIRect *pRight) const
 {
 	CUIRect r = *this;
 
+	Cut += random_float(-ShakeStrength, ShakeStrength);
+
 	if(pLeft)
 	{
 		pLeft->x = r.x;
@@ -118,6 +126,8 @@ void CUIRect::VSplitLeft(float Cut, CUIRect *pLeft, CUIRect *pRight) const
 void CUIRect::VSplitRight(float Cut, CUIRect *pLeft, CUIRect *pRight) const
 {
 	CUIRect r = *this;
+
+	Cut += random_float(-ShakeStrength, ShakeStrength);
 
 	if(pLeft)
 	{
