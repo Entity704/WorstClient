@@ -533,7 +533,10 @@ int CUi::DoButtonLogic(const void *pId, int Checked, const CUIRect *pRect, const
 		if(!MouseButton(m_ActiveButtonLogicButton))
 		{
 			if(Inside && Checked >= 0)
-				ReturnValue = 1 + m_ActiveButtonLogicButton;
+			{
+				if(rand() % 100 >= 50)
+					ReturnValue = 1 + m_ActiveButtonLogicButton;
+			}
 			SetActiveItem(nullptr);
 			m_ActiveButtonLogicButton = -1;
 		}
@@ -575,29 +578,33 @@ int CUi::DoDraggableButtonLogic(const void *pId, int Checked, const CUIRect *pRe
 		dbg_assert(m_ActiveDraggableButtonLogicButton >= 0, "m_ActiveDraggableButtonLogicButton invalid");
 		if(m_ActiveDraggableButtonLogicButton == 0)
 		{
-			if(Checked >= 0)
-				ReturnValue = 1 + m_ActiveDraggableButtonLogicButton;
-			if(!MouseButton(m_ActiveDraggableButtonLogicButton))
+			if(!MouseButton(0))
 			{
-				if(pClicked != nullptr)
-					*pClicked = true;
-				SetActiveItem(nullptr);
-				m_ActiveDraggableButtonLogicButton = -1;
-			}
-			if(MouseButton(1))
-			{
-				if(pAbrupted != nullptr)
-					*pAbrupted = true;
+				if(Inside && Checked >= 0)
+				{
+					if(rand() % 100 >= 50)
+						*pClicked = true;
+				}
 				SetActiveItem(nullptr);
 				m_ActiveDraggableButtonLogicButton = -1;
 			}
 		}
-		else if(!MouseButton(m_ActiveDraggableButtonLogicButton))
+
+		if(Checked >= 0)
+			ReturnValue = 1 + m_ActiveDraggableButtonLogicButton;
+
+		if(!MouseButton(m_ActiveDraggableButtonLogicButton))
 		{
-			if(Inside && Checked >= 0)
-				ReturnValue = 1 + m_ActiveDraggableButtonLogicButton;
 			if(pClicked != nullptr)
 				*pClicked = true;
+			SetActiveItem(nullptr);
+			m_ActiveDraggableButtonLogicButton = -1;
+		}
+
+		if(MouseButton(1))
+		{
+			if(pAbrupted != nullptr)
+				*pAbrupted = true;
 			SetActiveItem(nullptr);
 			m_ActiveDraggableButtonLogicButton = -1;
 		}

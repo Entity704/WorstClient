@@ -1,6 +1,7 @@
 #if defined(CONF_BACKEND_VULKAN)
 
 #include <base/dbg.h>
+#include <base/io.h>
 #include <base/log.h>
 #include <base/mem.h>
 #include <base/str.h>
@@ -927,8 +928,6 @@ class CCommandProcessorFragment_Vulkan : public CCommandProcessorFragment_GLBase
 	VkFence m_GetPresentedImgDataHelperFence = VK_NULL_HANDLE;
 
 	std::array<VkSampler, SUPPORTED_SAMPLER_TYPE_COUNT> m_aSamplers;
-
-	class IStorage *m_pStorage;
 
 	struct SDelayedBufferCleanupItem
 	{
@@ -4684,9 +4683,20 @@ public:
 		auto ShaderFileIterator = m_ShaderFiles.find(pFilename);
 		if(ShaderFileIterator == m_ShaderFiles.end())
 		{
+			// Shaders are always loaded from the `data` directory in the working
+			// directory, so that local shader changes take effect immediately.
+			char aShaderPath[IO_MAX_PATH_LENGTH];
+			str_format(aShaderPath, sizeof(aShaderPath), "data/%s", pFilename);
+
+			IOHANDLE ShaderFile = io_open(aShaderPath, IOFLAG_READ);
+			if(!ShaderFile)
+				return false;
+
 			void *pShaderBuff;
 			unsigned FileSize;
-			if(!m_pStorage->ReadFile(pFilename, IStorage::TYPE_ALL, &pShaderBuff, &FileSize))
+			const bool ReadSuccess = io_read_all(ShaderFile, &pShaderBuff, &FileSize);
+			io_close(ShaderFile);
+			if(!ReadSuccess)
 				return false;
 
 			std::vector<uint8_t> vShaderBuff;
@@ -6712,7 +6722,6 @@ public:
 			return false;
 		}
 
-		m_pStorage = pCommand->m_pStorage;
 		if(InitVulkan<true>() != 0)
 		{
 			*pCommand->m_pInitError = -2;

@@ -28,63 +28,64 @@ void CMenusStart::RenderStartMenu(CUIRect MainView)
 	// render logo
 	Graphics()->TextureSet(g_pData->m_aImages[IMAGE_BANNER].m_Id);
 	Graphics()->QuadsBegin();
-	Graphics()->SetColor(1, 1, 1, 1);
-	IGraphics::CQuadItem QuadItem(MainView.w / 2 - 170, 60, 360, 103);
+	Graphics()->SetColor(1, 1, 1, 0.8);
+	IGraphics::CQuadItem QuadItem(MainView.w / 2 - 400, 60, 800, 100);
 	Graphics()->QuadsDrawTL(&QuadItem, 1);
 	Graphics()->QuadsEnd();
 
-	const float Rounding = 10.0f;
-	const float VMargin = MainView.w / 2 - 190.0f;
+	const float Rounding = 80.0f;
+	const float DeRoundingOfXiaoButton = 20.0f;
+	const float VMargin = MainView.w / 2 - 400.0f;
 
 	CUIRect Button;
 	int NewPage = -1;
 
 	CUIRect ExtMenu;
 	MainView.VSplitLeft(30.0f, nullptr, &ExtMenu);
-	ExtMenu.VSplitLeft(100.0f, &ExtMenu, nullptr);
+	ExtMenu.VSplitLeft(60.0f, &ExtMenu, nullptr);
 
-	ExtMenu.HSplitBottom(20.0f, &ExtMenu, &Button);
+	ExtMenu.HSplitBottom(200.0f, &ExtMenu, &Button);
 	static CButtonContainer s_DiscordButton;
-	if(GameClient()->m_Menus.DoButton_Menu(&s_DiscordButton, Localize("Discord"), 0, &Button, BUTTONFLAG_LEFT, nullptr, IGraphics::CORNER_ALL, 5.0f, 0.0f, ColorRGBA(0.0f, 0.0f, 0.0f, 0.25f)))
+	if(GameClient()->m_Menus.DoButton_Menu(&s_DiscordButton, Localize("Discord"), 0, &Button, BUTTONFLAG_LEFT, nullptr, IGraphics::CORNER_ALL, DeRoundingOfXiaoButton, 0.0f, ColorRGBA(0.0f, 0.0f, 0.0f, 0.25f)))
 	{
 		Client()->ViewLink(Localize("https://ddnet.org/discord"));
 	}
 
-	ExtMenu.HSplitBottom(5.0f, &ExtMenu, nullptr); // little space
+	ExtMenu.HSplitBottom(0.0f, &ExtMenu, nullptr); // little space
 	ExtMenu.HSplitBottom(20.0f, &ExtMenu, &Button);
 	static CButtonContainer s_LearnButton;
-	if(GameClient()->m_Menus.DoButton_Menu(&s_LearnButton, Localize("Learn"), 0, &Button, BUTTONFLAG_LEFT, nullptr, IGraphics::CORNER_ALL, 5.0f, 0.0f, ColorRGBA(0.0f, 0.0f, 0.0f, 0.25f)))
+	if(GameClient()->m_Menus.DoButton_Menu(&s_LearnButton, Localize("Learn"), 0, &Button, BUTTONFLAG_LEFT, nullptr, IGraphics::CORNER_ALL, DeRoundingOfXiaoButton, 0.0f, ColorRGBA(0.0f, 0.0f, 0.0f, 0.25f)))
 	{
 		Client()->ViewLink(Localize("https://wiki.ddnet.org/"));
 	}
 
-	ExtMenu.HSplitBottom(5.0f, &ExtMenu, nullptr); // little space
+	ExtMenu.HSplitBottom(0.0f, &ExtMenu, nullptr); // little space
 	ExtMenu.HSplitBottom(20.0f, &ExtMenu, &Button);
 	static CButtonContainer s_TutorialButton;
-	if(GameClient()->m_Menus.DoButton_Menu(&s_TutorialButton, Localize("Tutorial"), 0, &Button, BUTTONFLAG_LEFT, nullptr, IGraphics::CORNER_ALL, 5.0f, 0.0f, ColorRGBA(0.0f, 0.0f, 0.0f, 0.25f)))
+	if(GameClient()->m_Menus.DoButton_Menu(&s_TutorialButton, Localize("Tutorial"), 0, &Button, BUTTONFLAG_LEFT, nullptr, IGraphics::CORNER_ALL, DeRoundingOfXiaoButton, 0.0f, ColorRGBA(0.0f, 0.0f, 0.0f, 0.25f)))
 	{
 		GameClient()->m_Menus.JoinTutorial();
 	}
 
-	ExtMenu.HSplitBottom(5.0f, &ExtMenu, nullptr); // little space
+	ExtMenu.HSplitBottom(0.0f, &ExtMenu, nullptr); // little space
 	ExtMenu.HSplitBottom(20.0f, &ExtMenu, &Button);
 	static CButtonContainer s_WebsiteButton;
-	if(GameClient()->m_Menus.DoButton_Menu(&s_WebsiteButton, Localize("Website"), 0, &Button, BUTTONFLAG_LEFT, nullptr, IGraphics::CORNER_ALL, 5.0f, 0.0f, ColorRGBA(0.0f, 0.0f, 0.0f, 0.25f)))
+	if(GameClient()->m_Menus.DoButton_Menu(&s_WebsiteButton, Localize("Website"), 0, &Button, BUTTONFLAG_LEFT, nullptr, IGraphics::CORNER_ALL, DeRoundingOfXiaoButton, 0.0f, ColorRGBA(0.0f, 0.0f, 0.0f, 0.25f)))
 	{
 		Client()->ViewLink("https://ddnet.org/");
 	}
 
-	ExtMenu.HSplitBottom(5.0f, &ExtMenu, nullptr); // little space
+	ExtMenu.HSplitBottom(0.0f, &ExtMenu, nullptr); // little space
 	ExtMenu.HSplitBottom(20.0f, &ExtMenu, &Button);
 	static CButtonContainer s_NewsButton;
-	if(GameClient()->m_Menus.DoButton_Menu(&s_NewsButton, Localize("News"), 0, &Button, BUTTONFLAG_LEFT, nullptr, IGraphics::CORNER_ALL, 5.0f, 0.0f, g_Config.m_UiUnreadNews ? ColorRGBA(0.0f, 1.0f, 0.0f, 0.25f) : ColorRGBA(0.0f, 0.0f, 0.0f, 0.25f)) || CheckHotKey(KEY_N))
+	if(GameClient()->m_Menus.DoButton_Menu(&s_NewsButton, Localize("News"), 0, &Button, BUTTONFLAG_LEFT, nullptr, IGraphics::CORNER_ALL, DeRoundingOfXiaoButton, 0.0f, g_Config.m_UiUnreadNews ? ColorRGBA(0.0f, 1.0f, 0.0f, 0.25f) : ColorRGBA(0.0f, 0.0f, 0.0f, 0.25f)) || CheckHotKey(KEY_N))
 		NewPage = CMenus::PAGE_NEWS;
 
 	CUIRect Menu;
 	MainView.VMargin(VMargin, &Menu);
 	Menu.HSplitBottom(25.0f, &Menu, nullptr);
 
-	Menu.HSplitBottom(40.0f, &Menu, &Button);
+	Menu.HSplitBottom(4.0f, &Menu, &Button);
 	static CButtonContainer s_QuitButton;
 	bool UsedEscape = false;
 	if(GameClient()->m_Menus.DoButton_Menu(&s_QuitButton, Localize("Quit"), 0, &Button, BUTTONFLAG_LEFT, nullptr, IGraphics::CORNER_ALL, Rounding, 0.5f, ColorRGBA(0.0f, 0.0f, 0.0f, 0.25f)) || (UsedEscape = Ui()->ConsumeHotkey(CUi::HOTKEY_ESCAPE)) || CheckHotKey(KEY_Q))
@@ -150,7 +151,7 @@ void CMenusStart::RenderStartMenu(CUIRect MainView)
 	}
 
 	Menu.HSplitBottom(5.0f, &Menu, nullptr); // little space
-	Menu.HSplitBottom(40.0f, &Menu, &Button);
+	Menu.HSplitBottom(80.0f, &Menu, &Button);
 	static CButtonContainer s_PlayButton;
 	if(GameClient()->m_Menus.DoButton_Menu(&s_PlayButton, Localize("Play", "Start menu"), 0, &Button, BUTTONFLAG_LEFT, g_Config.m_ClShowStartMenuImages ? "play_game" : nullptr, IGraphics::CORNER_ALL, Rounding, 0.5f, ColorRGBA(0.0f, 0.0f, 0.0f, 0.25f)) || Ui()->ConsumeHotkey(CUi::HOTKEY_ENTER) || CheckHotKey(KEY_P))
 	{
@@ -164,12 +165,12 @@ void CMenusStart::RenderStartMenu(CUIRect MainView)
 	CurVersion.HSplitTop(20.0f, &ConsoleButton, &CurVersion);
 	CurVersion.HSplitTop(5.0f, nullptr, &CurVersion);
 	ConsoleButton.VSplitRight(40.0f, nullptr, &ConsoleButton);
-	Ui()->DoLabel(&CurVersion, GAME_RELEASE_VERSION, 14.0f, TEXTALIGN_MR);
+	Ui()->DoLabel(&CurVersion, (std::string("Der vesrino is ") + GAME_RELEASE_VERSION).c_str(), 14.0f, TEXTALIGN_MR);
 
 	static CButtonContainer s_ConsoleButton;
 	TextRender()->SetFontPreset(EFontPreset::ICON_FONT);
 	TextRender()->SetRenderFlags(ETextRenderFlags::TEXT_RENDER_FLAG_ONLY_ADVANCE_WIDTH | ETextRenderFlags::TEXT_RENDER_FLAG_NO_X_BEARING | ETextRenderFlags::TEXT_RENDER_FLAG_NO_Y_BEARING | ETextRenderFlags::TEXT_RENDER_FLAG_NO_PIXEL_ALIGNMENT | ETextRenderFlags::TEXT_RENDER_FLAG_NO_OVERSIZE);
-	if(GameClient()->m_Menus.DoButton_Menu(&s_ConsoleButton, FontIcon::TERMINAL, 0, &ConsoleButton, BUTTONFLAG_LEFT, nullptr, IGraphics::CORNER_ALL, 5.0f, 0.0f, ColorRGBA(0.0f, 0.0f, 0.0f, 0.1f)))
+	if(GameClient()->m_Menus.DoButton_Menu(&s_ConsoleButton, FontIcon::TERMINAL, 0, &ConsoleButton, BUTTONFLAG_LEFT, nullptr, IGraphics::CORNER_ALL, 1.0f, 0.0f, ColorRGBA(0.0f, 0.0f, 0.0f, 0.92f)))
 	{
 		GameClient()->m_GameConsole.Toggle(CGameConsole::CONSOLETYPE_LOCAL);
 	}
@@ -191,7 +192,7 @@ void CMenusStart::RenderStartMenu(CUIRect MainView)
 	if(State == IUpdater::CLEAN && NeedUpdate)
 	{
 		static CButtonContainer s_VersionUpdate;
-		if(GameClient()->m_Menus.DoButton_Menu(&s_VersionUpdate, Localize("Update now"), 0, &UpdateButton, BUTTONFLAG_LEFT, 0, IGraphics::CORNER_ALL, 5.0f, 0.0f, ColorRGBA(0.0f, 0.0f, 0.0f, 0.25f)))
+		if(GameClient()->m_Menus.DoButton_Menu(&s_VersionUpdate, Localize("Update now"), 0, &UpdateButton, BUTTONFLAG_LEFT, 0, IGraphics::CORNER_ALL, DeRoundingOfXiaoButton, 0.0f, ColorRGBA(0.0f, 0.0f, 0.0f, 0.25f)))
 		{
 			Updater()->InitiateUpdate();
 		}
@@ -199,7 +200,7 @@ void CMenusStart::RenderStartMenu(CUIRect MainView)
 	else if(State == IUpdater::NEED_RESTART)
 	{
 		static CButtonContainer s_VersionUpdate;
-		if(GameClient()->m_Menus.DoButton_Menu(&s_VersionUpdate, Localize("Restart"), 0, &UpdateButton, BUTTONFLAG_LEFT, 0, IGraphics::CORNER_ALL, 5.0f, 0.0f, ColorRGBA(0.0f, 0.0f, 0.0f, 0.25f)))
+		if(GameClient()->m_Menus.DoButton_Menu(&s_VersionUpdate, Localize("Restart"), 0, &UpdateButton, BUTTONFLAG_LEFT, 0, IGraphics::CORNER_ALL, DeRoundingOfXiaoButton, 0.0f, ColorRGBA(0.0f, 0.0f, 0.0f, 0.25f)))
 		{
 			Client()->Restart();
 		}

@@ -3,6 +3,7 @@
 #include <base/detect.h>
 #include <base/io.h>
 #include <base/log.h>
+#include <base/str.h>
 
 #if defined(BACKEND_AS_OPENGL_ES) || !defined(CONF_BACKEND_OPENGL_ES)
 
@@ -31,9 +32,14 @@ bool CGLSL::LoadShader(CGLSLCompiler *pCompiler, IStorage *pStorage, const char 
 	if(m_IsLoaded)
 		return true;
 
+	// Shaders are always loaded from the `data` directory in the working
+	// directory, so that local shader changes take effect immediately.
+	char aShaderPath[IO_MAX_PATH_LENGTH];
+	str_format(aShaderPath, sizeof(aShaderPath), "data/%s", pFile);
+
 	CLineReader LineReader;
 	std::vector<std::string> vLines;
-	if(!LineReader.OpenFile(pStorage->OpenFile(pFile, IOFLAG_READ, IStorage::TYPE_ALL)))
+	if(!LineReader.OpenFile(io_open(aShaderPath, IOFLAG_READ)))
 	{
 		return false;
 	}

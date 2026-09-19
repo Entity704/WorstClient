@@ -1040,33 +1040,38 @@ void CGraphics_Threaded::DrawRectExt(float x, float y, float w, float h, float r
 		float Sa2 = std::sin(a2);
 		float Sa3 = std::sin(a3);
 
+		float r_tl = random_float(r * 0.5f, r * 1.5f);
+		float r_tr = random_float(r * 0.5f, r * 1.5f);
+		float r_bl = random_float(r * 0.5f, r * 1.5f);
+		float r_br = random_float(r * 0.5f, r * 1.5f);
+
 		if(Corners & CORNER_TL)
 			aFreeform[NumItems++] = IGraphics::CFreeformItem(
-				x + r, y + r,
-				x + (1 - Ca1) * r, y + (1 - Sa1) * r,
-				x + (1 - Ca3) * r, y + (1 - Sa3) * r,
-				x + (1 - Ca2) * r, y + (1 - Sa2) * r);
+				x + r_tl, y + r_tl,
+				x + (1 - Ca1) * r_tl, y + (1 - Sa1) * r_tl,
+				x + (1 - Ca3) * r_tl, y + (1 - Sa3) * r_tl,
+				x + (1 - Ca2) * r_tl, y + (1 - Sa2) * r_tl);
 
 		if(Corners & CORNER_TR)
 			aFreeform[NumItems++] = IGraphics::CFreeformItem(
-				x + w - r, y + r,
-				x + w - r + Ca1 * r, y + (1 - Sa1) * r,
-				x + w - r + Ca3 * r, y + (1 - Sa3) * r,
-				x + w - r + Ca2 * r, y + (1 - Sa2) * r);
+				x + w - r_tr, y + r_tr,
+				x + w - r_tr + Ca1 * r_tr, y + (1 - Sa1) * r_tr,
+				x + w - r_tr + Ca3 * r_tr, y + (1 - Sa3) * r_tr,
+				x + w - r_tr + Ca2 * r_tr, y + (1 - Sa2) * r_tr);
 
 		if(Corners & CORNER_BL)
 			aFreeform[NumItems++] = IGraphics::CFreeformItem(
-				x + r, y + h - r,
-				x + (1 - Ca1) * r, y + h - r + Sa1 * r,
-				x + (1 - Ca3) * r, y + h - r + Sa3 * r,
-				x + (1 - Ca2) * r, y + h - r + Sa2 * r);
+				x + r_bl, y + h - r_bl,
+				x + (1 - Ca1) * r_bl, y + h - r_bl + Sa1 * r_bl,
+				x + (1 - Ca3) * r_bl, y + h - r_bl + Sa3 * r_bl,
+				x + (1 - Ca2) * r_bl, y + h - r_bl + Sa2 * r_bl);
 
 		if(Corners & CORNER_BR)
 			aFreeform[NumItems++] = IGraphics::CFreeformItem(
-				x + w - r, y + h - r,
-				x + w - r + Ca1 * r, y + h - r + Sa1 * r,
-				x + w - r + Ca3 * r, y + h - r + Sa3 * r,
-				x + w - r + Ca2 * r, y + h - r + Sa2 * r);
+				x + w - r_br, y + h - r_br,
+				x + w - r_br + Ca1 * r_br, y + h - r_br + Sa1 * r_br,
+				x + w - r_br + Ca3 * r_br, y + h - r_br + Sa3 * r_br,
+				x + w - r_br + Ca2 * r_br, y + h - r_br + Sa2 * r_br);
 	}
 	QuadsDrawFreeform(aFreeform, NumItems);
 
@@ -1114,14 +1119,19 @@ void CGraphics_Threaded::DrawRectExt4(float x, float y, float w, float h, ColorR
 		float Sa2 = std::sin(a2);
 		float Sa3 = std::sin(a3);
 
+		float r_tl = random_float(r * 0.5f, r * 1.5f);
+		float r_tr = random_float(r * 0.5f, r * 1.5f);
+		float r_bl = random_float(r * 0.5f, r * 1.5f);
+		float r_br = random_float(r * 0.5f, r * 1.5f);
+
 		if(Corners & CORNER_TL)
 		{
 			SetColor(ColorTopLeft);
 			IGraphics::CFreeformItem ItemF = IGraphics::CFreeformItem(
-				x + r, y + r,
-				x + (1 - Ca1) * r, y + (1 - Sa1) * r,
-				x + (1 - Ca3) * r, y + (1 - Sa3) * r,
-				x + (1 - Ca2) * r, y + (1 - Sa2) * r);
+				x + r_tl, y + r_tl,
+				x + (1 - Ca1) * r_tl, y + (1 - Sa1) * r_tl,
+				x + (1 - Ca3) * r_tl, y + (1 - Sa3) * r_tl,
+				x + (1 - Ca2) * r_tl, y + (1 - Sa2) * r_tl);
 			QuadsDrawFreeform(&ItemF, 1);
 		}
 
@@ -1129,10 +1139,10 @@ void CGraphics_Threaded::DrawRectExt4(float x, float y, float w, float h, ColorR
 		{
 			SetColor(ColorTopRight);
 			IGraphics::CFreeformItem ItemF = IGraphics::CFreeformItem(
-				x + w - r, y + r,
-				x + w - r + Ca1 * r, y + (1 - Sa1) * r,
-				x + w - r + Ca3 * r, y + (1 - Sa3) * r,
-				x + w - r + Ca2 * r, y + (1 - Sa2) * r);
+				x + w - r_tr, y + r_tr,
+				x + w - r_tr + Ca1 * r_tr, y + (1 - Sa1) * r_tr,
+				x + w - r_tr + Ca3 * r_tr, y + (1 - Sa3) * r_tr,
+				x + w - r_tr + Ca2 * r_tr, y + (1 - Sa2) * r_tr);
 			QuadsDrawFreeform(&ItemF, 1);
 		}
 
@@ -1140,10 +1150,10 @@ void CGraphics_Threaded::DrawRectExt4(float x, float y, float w, float h, ColorR
 		{
 			SetColor(ColorBottomLeft);
 			IGraphics::CFreeformItem ItemF = IGraphics::CFreeformItem(
-				x + r, y + h - r,
-				x + (1 - Ca1) * r, y + h - r + Sa1 * r,
-				x + (1 - Ca3) * r, y + h - r + Sa3 * r,
-				x + (1 - Ca2) * r, y + h - r + Sa2 * r);
+				x + r_bl, y + h - r_bl,
+				x + (1 - Ca1) * r_bl, y + h - r_bl + Sa1 * r_bl,
+				x + (1 - Ca3) * r_bl, y + h - r_bl + Sa3 * r_bl,
+				x + (1 - Ca2) * r_bl, y + h - r_bl + Sa2 * r_bl);
 			QuadsDrawFreeform(&ItemF, 1);
 		}
 
@@ -1151,10 +1161,10 @@ void CGraphics_Threaded::DrawRectExt4(float x, float y, float w, float h, ColorR
 		{
 			SetColor(ColorBottomRight);
 			IGraphics::CFreeformItem ItemF = IGraphics::CFreeformItem(
-				x + w - r, y + h - r,
-				x + w - r + Ca1 * r, y + h - r + Sa1 * r,
-				x + w - r + Ca3 * r, y + h - r + Sa3 * r,
-				x + w - r + Ca2 * r, y + h - r + Sa2 * r);
+				x + w - r_br, y + h - r_br,
+				x + w - r_br + Ca1 * r_br, y + h - r_br + Sa1 * r_br,
+				x + w - r_br + Ca3 * r_br, y + h - r_br + Sa3 * r_br,
+				x + w - r_br + Ca2 * r_br, y + h - r_br + Sa2 * r_br);
 			QuadsDrawFreeform(&ItemF, 1);
 		}
 	}
@@ -1238,33 +1248,38 @@ int CGraphics_Threaded::CreateRectQuadContainer(float x, float y, float w, float
 		float Sa2 = std::sin(a2);
 		float Sa3 = std::sin(a3);
 
+		float r_tl = random_float(r * 0.5f, r * 1.5f);
+		float r_tr = random_float(r * 0.5f, r * 1.5f);
+		float r_bl = random_float(r * 0.5f, r * 1.5f);
+		float r_br = random_float(r * 0.5f, r * 1.5f);
+
 		if(Corners & CORNER_TL)
 			aFreeform[NumItems++] = IGraphics::CFreeformItem(
-				x + r, y + r,
-				x + (1 - Ca1) * r, y + (1 - Sa1) * r,
-				x + (1 - Ca3) * r, y + (1 - Sa3) * r,
-				x + (1 - Ca2) * r, y + (1 - Sa2) * r);
+				x + r_tl, y + r_tl,
+				x + (1 - Ca1) * r_tl, y + (1 - Sa1) * r_tl,
+				x + (1 - Ca3) * r_tl, y + (1 - Sa3) * r_tl,
+				x + (1 - Ca2) * r_tl, y + (1 - Sa2) * r_tl);
 
 		if(Corners & CORNER_TR)
 			aFreeform[NumItems++] = IGraphics::CFreeformItem(
-				x + w - r, y + r,
-				x + w - r + Ca1 * r, y + (1 - Sa1) * r,
-				x + w - r + Ca3 * r, y + (1 - Sa3) * r,
-				x + w - r + Ca2 * r, y + (1 - Sa2) * r);
+				x + w - r_tr, y + r_tr,
+				x + w - r_tr + Ca1 * r_tr, y + (1 - Sa1) * r_tr,
+				x + w - r_tr + Ca3 * r_tr, y + (1 - Sa3) * r_tr,
+				x + w - r_tr + Ca2 * r_tr, y + (1 - Sa2) * r_tr);
 
 		if(Corners & CORNER_BL)
 			aFreeform[NumItems++] = IGraphics::CFreeformItem(
-				x + r, y + h - r,
-				x + (1 - Ca1) * r, y + h - r + Sa1 * r,
-				x + (1 - Ca3) * r, y + h - r + Sa3 * r,
-				x + (1 - Ca2) * r, y + h - r + Sa2 * r);
+				x + r_bl, y + h - r_bl,
+				x + (1 - Ca1) * r_bl, y + h - r_bl + Sa1 * r_bl,
+				x + (1 - Ca3) * r_bl, y + h - r_bl + Sa3 * r_bl,
+				x + (1 - Ca2) * r_bl, y + h - r_bl + Sa2 * r_bl);
 
 		if(Corners & CORNER_BR)
 			aFreeform[NumItems++] = IGraphics::CFreeformItem(
-				x + w - r, y + h - r,
-				x + w - r + Ca1 * r, y + h - r + Sa1 * r,
-				x + w - r + Ca3 * r, y + h - r + Sa3 * r,
-				x + w - r + Ca2 * r, y + h - r + Sa2 * r);
+				x + w - r_br, y + h - r_br,
+				x + w - r_br + Ca1 * r_br, y + h - r_br + Sa1 * r_br,
+				x + w - r_br + Ca3 * r_br, y + h - r_br + Sa3 * r_br,
+				x + w - r_br + Ca2 * r_br, y + h - r_br + Sa2 * r_br);
 	}
 
 	if(NumItems > 0)

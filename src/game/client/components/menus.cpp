@@ -539,7 +539,7 @@ void CMenus::RenderMenubar(CUIRect Box, IClient::EClientState ClientState)
 		}
 		GameClient()->m_Tooltips.DoToolTip(&s_StartButton, &Button, Localize("Main menu"));
 
-		const float BrowserButtonWidth = 75.0f;
+		const float BrowserButtonWidth = 140.0f;
 		Box.VSplitLeft(10.0f, nullptr, &Box);
 		Box.VSplitLeft(BrowserButtonWidth, &Button, &Box);
 		static CButtonContainer s_InternetButton;

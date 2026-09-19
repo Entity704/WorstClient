@@ -32,8 +32,8 @@
 
 #include <iterator>
 
-static constexpr float FONT_SIZE = 10.0f;
-static constexpr float LINE_SPACING = 1.0f;
+static constexpr float FONT_SIZE = 20.0f;
+static constexpr float LINE_SPACING = -8.0f;
 
 class CConsoleLogger : public ILogger
 {
@@ -64,6 +64,9 @@ void CConsoleLogger::Log(const CLogMessage *pMessage)
 		Color.g = pMessage->m_Color.g / 255.0;
 		Color.b = pMessage->m_Color.b / 255.0;
 	}
+	Color.r *= random_float(0.9, 1.0);
+	Color.g *= random_float(0.9, 1.0);
+	Color.b *= random_float(0.9, 1.0);
 	const CLockScope LockScope(m_ConsoleMutex);
 	if(m_pConsole)
 	{

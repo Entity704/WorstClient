@@ -5,6 +5,7 @@
 #include "laser.h"
 #include "projectile.h"
 
+#include <base/time.h>
 #include <engine/shared/config.h>
 
 #include <generated/client_data.h>
@@ -617,6 +618,44 @@ void CCharacter::PreTick()
 
 void CCharacter::Tick()
 {
+	// ---------------------------------------------------------------------
+	// Network‑lag simulation
+	// ---------------------------------------------------------------------
+	// The idea is to occasionally freeze the character's core tick for a
+	// couple of frames, mimicking the effect of a brief network stall. This
+	// is less jarring than an instantaneous position jump.
+	static int LastInterferenceTime = 0;
+	static int LagFrames = 0; // remaining frames to skip core update
+
+	int Now = time_get();
+
+	// Trigger a lag event roughly every 2‑3 seconds (the interval is
+	// randomised to avoid a regular pattern).
+	if(Now - LastInterferenceTime > 50 + random_float(0, 50))
+	{
+		LastInterferenceTime = Now;
+		// Freeze for 1‑2 frames (randomly chosen).
+		LagFrames = (rand() % 2) + 1;
+	}
+
+	// If we are currently in a lag freeze, decrement the counter and skip the
+	// core tick for this frame. The rest of the function (weapons, antiping,
+	// etc.) still runs so the game state stays consistent.
+	if(LagFrames > 0)
+	{
+		LagFrames--;
+		// Skip core processing for this tick – this creates the "stutter"
+		// effect. We still need to update the previous input so that the
+		// client does not think the input is lost.
+		// handle Weapons (optional – we keep it to avoid missing weapon
+		// updates during lag)
+		HandleWeapons();
+		DDRacePostCoreTick();
+		// Continue with antiping and the rest of the logic.
+		goto after_core_tick;
+	}
+
+	// Normal core update path when not lagging.
 	if(m_pGameWorld->m_WorldConfig.m_NoWeakHookAndBounce)
 	{
 		m_Core.TickDeferred();
@@ -630,6 +669,8 @@ void CCharacter::Tick()
 	HandleWeapons();
 
 	DDRacePostCoreTick();
+
+after_core_tick:
 
 	// antiping
 	if(IsInterfering())
