@@ -5167,6 +5167,17 @@ int main(int argc, const char **argv)
 		pConsole->SetUnknownCommandCallback(IConsole::EmptyUnknownCommandCallback, nullptr);
 	}
 
+	// execute the WorstClient fork config file, which is loaded after the main one so that it wins over
+	// the upstream settings. Unknown commands are not stored back, unlike in the main config file: the
+	// file is written by the client and only holds fork settings, so stale entries can simply be dropped.
+	if(pStorage->FileExists(CONFIG_FILE_WORSTCLIENT, IStorage::TYPE_ALL))
+	{
+		if(!pConsole->ExecuteFile(CONFIG_FILE_WORSTCLIENT, IConsole::CLIENT_ID_UNSPECIFIED))
+		{
+			log_error("client", "Failed to load config from '" CONFIG_FILE_WORSTCLIENT "'.");
+		}
+	}
+
 	// execute autoexec file
 	if(pStorage->FileExists(AUTOEXEC_CLIENT_FILE, IStorage::TYPE_ALL))
 	{

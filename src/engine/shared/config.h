@@ -17,6 +17,10 @@
 static constexpr const char *DEFAULT_SAVED_RCON_USER = "local-server";
 
 #define CONFIG_FILE "settings_ddnet.cfg"
+// Config variables of the WorstClient fork are recognized by this script name prefix and are stored in
+// a separate file, so that they stay apart from the upstream settings and are easy to share.
+#define WORSTCLIENT_CONFIG_PREFIX "wc_"
+#define CONFIG_FILE_WORSTCLIENT "settings_worstclient.cfg"
 #define AUTOEXEC_FILE "autoexec.cfg"
 #define AUTOEXEC_CLIENT_FILE "autoexec_client.cfg"
 #define AUTOEXEC_SERVER_FILE "autoexec_server.cfg"
@@ -263,6 +267,18 @@ class CConfigManager : public IConfigManager
 	std::vector<SConfigVariable *> m_vpGameVariables;
 	std::vector<const char *> m_vpUnknownCommands;
 	CHeap m_ConfigHeap;
+
+	// The player settings are split into the regular DDNet settings and the settings of the WorstClient
+	// fork, see WORSTCLIENT_CONFIG_PREFIX and CONFIG_FILE_WORSTCLIENT.
+	enum class EConfigFile
+	{
+		MAIN,
+		WORSTCLIENT,
+	};
+
+	static const char *ConfigFileName(EConfigFile File);
+	static bool IsWorstClientVariable(const SConfigVariable *pVariable);
+	bool SaveFile(EConfigFile File);
 
 	static void Con_Reset(IConsole::IResult *pResult, void *pUserData);
 	static void Con_Toggle(IConsole::IResult *pResult, void *pUserData);

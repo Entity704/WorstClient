@@ -375,13 +375,22 @@ void CConfigManager::SetGameSettingsReadOnly(bool ReadOnly)
 	}
 }
 
-bool CConfigManager::Save()
+const char *CConfigManager::ConfigFileName(EConfigFile File)
 {
-	if(!m_pStorage || !g_Config.m_ClSaveSettings)
-		return true;
+	return File == EConfigFile::WORSTCLIENT ? CONFIG_FILE_WORSTCLIENT : CONFIG_FILE;
+}
+
+bool CConfigManager::IsWorstClientVariable(const SConfigVariable *pVariable)
+{
+	return str_startswith(pVariable->m_pScriptName, WORSTCLIENT_CONFIG_PREFIX) != nullptr;
+}
+
+bool CConfigManager::SaveFile(EConfigFile File)
+{
+	const char *pFilename = ConfigFileName(File);
 
 	char aConfigFileTmp[IO_MAX_PATH_LENGTH];
-	m_ConfigFile = m_pStorage->OpenFile(IStorage::FormatTmpPath(aConfigFileTmp, sizeof(aConfigFileTmp), CONFIG_FILE), IOFLAG_WRITE, IStorage::TYPE_SAVE);
+	m_ConfigFile = m_pStorage->OpenFile(IStorage::FormatTmpPath(aConfigFileTmp, sizeof(aConfigFileTmp), pFilename), IOFLAG_WRITE, IStorage::TYPE_SAVE);
 
 	if(!m_ConfigFile)
 	{
@@ -394,6 +403,8 @@ bool CConfigManager::Save()
 	char aLineBuf[2048];
 	for(const SConfigVariable *pVariable : m_vpAllVariables)
 	{
+		if(IsWorstClientVariable(pVariable) != (File == EConfigFile::WORSTCLIENT))
+			continue;
 		if((pVariable->m_Flags & CFGFLAG_SAVE) != 0 && !pVariable->IsDefault())
 		{
 			pVariable->Serialize(aLineBuf, sizeof(aLineBuf));
@@ -401,14 +412,18 @@ bool CConfigManager::Save()
 		}
 	}
 
-	for(const auto &Callback : m_vCallbacks)
+	// Binds, skins, favorites, ... and unknown commands always belong to the main config file.
+	if(File == EConfigFile::MAIN)
 	{
-		Callback.m_pfnFunc(this, Callback.m_pUserData);
-	}
+		for(const auto &Callback : m_vCallbacks)
+		{
+			Callback.m_pfnFunc(this, Callback.m_pUserData);
+		}
 
-	for(const char *pCommand : m_vpUnknownCommands)
-	{
-		WriteLine(pCommand);
+		for(const char *pCommand : m_vpUnknownCommands)
+		{
+			WriteLine(pCommand);
+		}
 	}
 
 	if(m_Failed)
@@ -435,14 +450,26 @@ bool CConfigManager::Save()
 		return false;
 	}
 
-	if(!m_pStorage->RenameFile(aConfigFileTmp, CONFIG_FILE, IStorage::TYPE_SAVE))
+	if(!m_pStorage->RenameFile(aConfigFileTmp, pFilename, IStorage::TYPE_SAVE))
 	{
-		log_error("config", "ERROR: renaming %s to " CONFIG_FILE " failed", aConfigFileTmp);
+		log_error("config", "ERROR: renaming %s to %s failed", aConfigFileTmp, pFilename);
 		return false;
 	}
 
-	log_info("config", "saved to " CONFIG_FILE);
+	log_info("config", "saved to %s", pFilename);
 	return true;
+}
+
+bool CConfigManager::Save()
+{
+	if(!m_pStorage || !g_Config.m_ClSaveSettings)
+		return true;
+
+	// The fork settings are saved even if the main file failed, so that a problem with one file does not
+	// silently drop the settings of the other one.
+	const bool MainSaved = SaveFile(EConfigFile::MAIN);
+	const bool WorstClientSaved = SaveFile(EConfigFile::WORSTCLIENT);
+	return MainSaved && WorstClientSaved;
 }
 
 void CConfigManager::RegisterCallback(SAVECALLBACKFUNC pfnFunc, void *pUserData)
