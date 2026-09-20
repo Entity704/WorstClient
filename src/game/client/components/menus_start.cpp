@@ -165,7 +165,8 @@ void CMenusStart::RenderStartMenu(CUIRect MainView)
 	CurVersion.HSplitTop(20.0f, &ConsoleButton, &CurVersion);
 	CurVersion.HSplitTop(5.0f, nullptr, &CurVersion);
 	ConsoleButton.VSplitRight(40.0f, nullptr, &ConsoleButton);
-	Ui()->DoLabel(&CurVersion, (std::string("Der vesrino is ") + GAME_RELEASE_VERSION).c_str(), 14.0f, TEXTALIGN_MR);
+	std::string versionText = std::string("Der vesrino is ") + GAME_RELEASE_VERSION;
+	Ui()->DoLabel(&CurVersion, versionText.c_str(), 14.0f, TEXTALIGN_MR);
 
 	static CButtonContainer s_ConsoleButton;
 	TextRender()->SetFontPreset(EFontPreset::ICON_FONT);
