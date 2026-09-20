@@ -6,6 +6,7 @@
 #include "projectile.h"
 
 #include <base/time.h>
+
 #include <engine/shared/config.h>
 
 #include <generated/client_data.h>
