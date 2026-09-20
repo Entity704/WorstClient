@@ -617,7 +617,7 @@ void CCharacter::PreTick()
 
 // WorstClient: fake lag spike, see CCharacter::Tick
 static constexpr int FAKE_LAG_INTERVAL_TICKS = 25; // one spike every ~N s
-static constexpr int FAKE_LAG_DURATION_TICKS = 3; // how long a spike lasts
+static constexpr int FAKE_LAG_DURATION_TICKS = 10; // how long a spike lasts
 static constexpr float FAKE_LAG_VEL_BIAS = 1.0f; // maximum velocity offset added per axis, in units per tick
 
 void CCharacter::Tick()
