@@ -5,8 +5,6 @@
 #include "laser.h"
 #include "projectile.h"
 
-#include <base/time.h>
-
 #include <engine/shared/config.h>
 
 #include <generated/client_data.h>
@@ -617,46 +615,19 @@ void CCharacter::PreTick()
 	m_Core.Tick(true, !m_pGameWorld->m_WorldConfig.m_NoWeakHookAndBounce);
 }
 
+// WorstClient: fake lag spike, see CCharacter::Tick
+static constexpr int FAKE_LAG_INTERVAL_TICKS = 75; // one spike every ~2.5 s
+static constexpr int FAKE_LAG_DURATION_TICKS = 3; // how long a spike lasts
+static constexpr float FAKE_LAG_VEL_BIAS = 1.0f; // maximum velocity offset added per axis, in units per tick
+
 void CCharacter::Tick()
 {
-	// ---------------------------------------------------------------------
-	// Network‑lag simulation
-	// ---------------------------------------------------------------------
-	// The idea is to occasionally freeze the character's core tick for a
-	// couple of frames, mimicking the effect of a brief network stall. This
-	// is less jarring than an instantaneous position jump.
-	static int LastInterferenceTime = 0;
-	static int LagFrames = 0; // remaining frames to skip core update
+	// WorstClient: shove the predicted velocity in a random direction for a few ticks, so the tee keeps
+	// popping away from the server position until the next snapshot corrects it.
+	const int Tick = GameWorld()->GameTick();
+	if(Tick > 0 && Tick % FAKE_LAG_INTERVAL_TICKS < FAKE_LAG_DURATION_TICKS)
+		m_Core.m_Vel += vec2(random_float(-FAKE_LAG_VEL_BIAS, FAKE_LAG_VEL_BIAS), random_float(-FAKE_LAG_VEL_BIAS, FAKE_LAG_VEL_BIAS));
 
-	int Now = time_get();
-
-	// Trigger a lag event roughly every 2‑3 seconds (the interval is
-	// randomised to avoid a regular pattern).
-	if(Now - LastInterferenceTime > 50 + random_float(0, 50))
-	{
-		LastInterferenceTime = Now;
-		// Freeze for 1‑2 frames (randomly chosen).
-		LagFrames = (rand() % 2) + 1;
-	}
-
-	// If we are currently in a lag freeze, decrement the counter and skip the
-	// core tick for this frame. The rest of the function (weapons, antiping,
-	// etc.) still runs so the game state stays consistent.
-	if(LagFrames > 0)
-	{
-		LagFrames--;
-		// Skip core processing for this tick – this creates the "stutter"
-		// effect. We still need to update the previous input so that the
-		// client does not think the input is lost.
-		// handle Weapons (optional – we keep it to avoid missing weapon
-		// updates during lag)
-		HandleWeapons();
-		DDRacePostCoreTick();
-		// Continue with antiping and the rest of the logic.
-		goto after_core_tick;
-	}
-
-	// Normal core update path when not lagging.
 	if(m_pGameWorld->m_WorldConfig.m_NoWeakHookAndBounce)
 	{
 		m_Core.TickDeferred();
@@ -670,8 +641,6 @@ void CCharacter::Tick()
 	HandleWeapons();
 
 	DDRacePostCoreTick();
-
-after_core_tick:
 
 	// antiping
 	if(IsInterfering())

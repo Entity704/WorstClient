@@ -37,7 +37,7 @@ void CMenus::RenderSettingsWorstClient(CUIRect MainView)
 	LeftPanel.Margin(PanelMargin, &LeftPanel);
 
 	LeftPanel.HSplitTop(HeadlineHeight, &Label, &LeftPanel);
-	Ui()->DoLabel(&Label, Localize("Holy"), 20.0f, TEXTALIGN_ML);
+	Ui()->DoLabel(&Label, Localize("Holy"), 16.0f, TEXTALIGN_ML);
 	LeftPanel.HSplitTop(HeadlineSpacing, nullptr, &LeftPanel);
 
 	LeftPanel.HSplitTop(LineSize, &Button, &LeftPanel);
@@ -60,7 +60,7 @@ void CMenus::RenderSettingsWorstClient(CUIRect MainView)
 	RightPanel.Margin(PanelMargin, &RightPanel);
 
 	RightPanel.HSplitTop(HeadlineHeight, &Label, &RightPanel);
-	Ui()->DoLabel(&Label, Localize("Management"), 20.0f, TEXTALIGN_ML);
+	Ui()->DoLabel(&Label, Localize("Management"), 16.0f, TEXTALIGN_ML);
 	RightPanel.HSplitTop(HeadlineSpacing, nullptr, &RightPanel);
 
 	RightPanel.HSplitTop(LineSize, &Button, &RightPanel);
