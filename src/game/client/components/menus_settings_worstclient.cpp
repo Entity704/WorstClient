@@ -32,7 +32,6 @@ void CMenus::RenderSettingsWorstClient(CUIRect MainView)
 		g_Config.m_WcFinishProtection ^= 1;
 	}
 	GameClient()->m_Tooltips.DoToolTip(&g_Config.m_WcFinishProtection, &Button, Localize("While a race is running, automatically kills your tee when it is at risk of finishing the race"));
-	TextRender()->TextColor(TextRender()->DefaultTextColor());
 
 	// management
 	MainView.HSplitTop(20.0f, nullptr, &MainView);
