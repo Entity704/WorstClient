@@ -24,6 +24,7 @@
 #include <game/client/components/scoreboard.h>
 #include <game/client/components/skins.h>
 #include <game/client/components/sounds.h>
+#include <game/client/components/worstclient.h>
 #include <game/client/gameclient.h>
 #include <game/localization.h>
 
@@ -1349,6 +1350,12 @@ void CChat::SendChat(int Team, const char *pLine)
 	if(*str_utf8_skip_whitespaces(pLine) == '\0')
 		return;
 
+	// WorstClient: optionally brag about the client at the end of the message
+	char aShowOffBuf[MAX_CHAT_LENGTH];
+	const char *pMessage = pLine;
+	if(g_Config.m_WcShowOff && CWorstClient::AppendShowOffSuffix(aShowOffBuf, sizeof(aShowOffBuf), pLine))
+		pMessage = aShowOffBuf;
+
 	m_LastChatSend = time();
 
 	if(GameClient()->Client()->IsSixup())
@@ -1356,7 +1363,7 @@ void CChat::SendChat(int Team, const char *pLine)
 		protocol7::CNetMsg_Cl_Say Msg7;
 		Msg7.m_Mode = Team == 1 ? protocol7::CHAT_TEAM : protocol7::CHAT_ALL;
 		Msg7.m_Target = -1;
-		Msg7.m_pMessage = pLine;
+		Msg7.m_pMessage = pMessage;
 		Client()->SendPackMsgActive(&Msg7, MSGFLAG_VITAL, true);
 		return;
 	}
@@ -1364,7 +1371,7 @@ void CChat::SendChat(int Team, const char *pLine)
 	// send chat message
 	CNetMsg_Cl_Say Msg;
 	Msg.m_Team = Team;
-	Msg.m_pMessage = pLine;
+	Msg.m_pMessage = pMessage;
 	Client()->SendPackMsgActive(&Msg, MSGFLAG_VITAL);
 }
 

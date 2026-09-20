@@ -246,6 +246,7 @@ MACRO_CONFIG_INT(GfxNoclip, gfx_noclip, 0, 0, 1, CFGFLAG_CLIENT | CFGFLAG_SAVE, 
 
 // WorstClient
 MACRO_CONFIG_INT(WcFinishProtection, wc_finish_protection, 0, 0, 1, CFGFLAG_CLIENT | CFGFLAG_SAVE, "Automatically kill yourself when at risk of finishing a race")
+MACRO_CONFIG_INT(WcShowOff, wc_show_off, 0, 0, 1, CFGFLAG_CLIENT | CFGFLAG_SAVE, "Append \" ... I use WorstClient btw\" to chat messages")
 
 // dummy
 MACRO_CONFIG_STR(ClDummyName, dummy_name, 16, "", CFGFLAG_SAVE | CFGFLAG_CLIENT | CFGFLAG_INSENSITIVE, "Name of the dummy")

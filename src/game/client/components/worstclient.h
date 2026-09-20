@@ -35,6 +35,12 @@ public:
 	// Only simulate the predicted tee when a finish tile is close enough to be reached in time.
 	static constexpr float FINISH_PREDICTION_RANGE = 256.0f;
 
+	// Appended to outgoing chat messages while wc_show_off is enabled.
+	static constexpr const char *SHOW_OFF_SUFFIX = " ... I use WorstClient btw";
+	// Writes pLine plus SHOW_OFF_SUFFIX into pBuf and returns whether that succeeded. Commands are never
+	// touched, and the message itself is never truncated: if the suffix does not fit, nothing is appended.
+	static bool AppendShowOffSuffix(char *pBuf, size_t BufSize, const char *pLine);
+
 	int Sizeof() const override { return sizeof(*this); }
 	void OnConsoleInit() override;
 	void OnReset() override;

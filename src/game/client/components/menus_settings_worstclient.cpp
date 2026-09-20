@@ -33,6 +33,14 @@ void CMenus::RenderSettingsWorstClient(CUIRect MainView)
 	}
 	GameClient()->m_Tooltips.DoToolTip(&g_Config.m_WcFinishProtection, &Button, Localize("While a race is running, automatically kills your tee when it is at risk of finishing the race"));
 
+	MainView.HSplitTop(20.0f, &Button, &MainView);
+	s_ScrollRegion.AddRect(Button);
+	if(DoButton_CheckBox(&g_Config.m_WcShowOff, Localize("Show off (append \" ... I use WorstClient btw\" to chat messages)"), g_Config.m_WcShowOff, &Button))
+	{
+		g_Config.m_WcShowOff ^= 1;
+	}
+	GameClient()->m_Tooltips.DoToolTip(&g_Config.m_WcShowOff, &Button, Localize("Appends \" ... I use WorstClient btw\" to every chat message you send. Commands like /pause are not affected"));
+
 	// management
 	MainView.HSplitTop(20.0f, nullptr, &MainView);
 	MainView.HSplitTop(30.0f, &Label, &MainView);

@@ -2710,3 +2710,9 @@ Management
 
 Open settings_worstclient.cfg, which stores the settings of WorstClient
 == 打开 settings_worstclient.cfg，WorstClient 的设置都保存在这个文件里
+
+Show off (append " ... I use WorstClient btw" to chat messages)
+== 附带炫耀信息（在末尾追加“ ... I use WorstClient btw”）
+
+Appends " ... I use WorstClient btw" to every chat message you send. Commands like /pause are not affected
+== 在你发送的每条聊天信息末尾追加“ ... I use WorstClient btw”。指令（如 /pause）不受影响

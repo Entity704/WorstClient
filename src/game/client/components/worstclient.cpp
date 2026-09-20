@@ -106,6 +106,23 @@ bool CWorstClient::AtRiskOfFinishing() const
 	return WillTouchFinishTile(FINISH_PREDICTION_TICKS);
 }
 
+bool CWorstClient::AppendShowOffSuffix(char *pBuf, size_t BufSize, const char *pLine)
+{
+	// Chat commands ("/pause", "/save", ...) are parsed by the server, so they must be sent verbatim.
+	// The server skips leading whitespace before looking for the leading slash, so do the same here.
+	if(*str_utf8_skip_whitespaces(pLine) == '/')
+		return false;
+
+	const size_t Length = str_length(pLine);
+	const size_t SuffixLength = str_length(SHOW_OFF_SUFFIX);
+	if(Length + SuffixLength + 1 > BufSize)
+		return false;
+
+	str_copy(pBuf, pLine, BufSize);
+	str_append(pBuf, SHOW_OFF_SUFFIX, BufSize);
+	return true;
+}
+
 void CWorstClient::OnUpdate()
 {
 	if(!g_Config.m_WcFinishProtection)
