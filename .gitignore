@@ -31,7 +31,6 @@ SAN.*
 _CPack_Packages/
 build.ninja
 checksummed_*
-!/cmake/checksummed_extra.txt
 cmake_install.cmake
 debug
 gmock.pc
@@ -53,9 +52,11 @@ testrunner\[1\]_include.cmake
 
 /SDL2.framework
 
+.gradle/
+!/cmake/checksummed_extra.txt
+
 # Android
 local.properties
-.gradle/
 
 # Ignore all the generated executables without extensions (for non-Windows
 # systems).
