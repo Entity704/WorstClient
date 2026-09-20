@@ -3541,7 +3541,8 @@ void CClient::Run()
 	if(!m_pConfigManager->Save())
 	{
 		char aError[128];
-		str_format(aError, sizeof(aError), Localize("Saving settings to '%s' failed"), CONFIG_FILE);
+		const char *pFailedFile = m_pConfigManager->SaveErrorFile();
+		str_format(aError, sizeof(aError), Localize("Saving settings to '%s' failed"), pFailedFile != nullptr ? pFailedFile : CONFIG_FILE);
 		m_vQuittingWarnings.emplace_back(Localize("Error saving settings"), aError);
 	}
 

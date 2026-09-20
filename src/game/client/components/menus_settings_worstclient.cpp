@@ -1,6 +1,7 @@
 #include "menus.h"
 
 #include <engine/shared/config.h>
+#include <engine/storage.h>
 #include <engine/textrender.h>
 
 #include <game/client/components/tooltips.h>
@@ -16,7 +17,14 @@ void CMenus::RenderSettingsWorstClient(CUIRect MainView)
 	ScrollParams.m_ScrollUnit = 20.0f;
 	s_ScrollRegion.Begin(&MainView, &ScrollParams);
 
-	CUIRect Button;
+	CUIRect Label, Button;
+
+	// holy
+	MainView.HSplitTop(30.0f, &Label, &MainView);
+	s_ScrollRegion.AddRect(Label);
+	Ui()->DoLabel(&Label, Localize("Holy"), 20.0f, TEXTALIGN_ML);
+	MainView.HSplitTop(5.0f, nullptr, &MainView);
+
 	MainView.HSplitTop(20.0f, &Button, &MainView);
 	s_ScrollRegion.AddRect(Button);
 	if(DoButton_CheckBox(&g_Config.m_WcFinishProtection, Localize("Finish Protection (auto suicide when at risk of finishing)"), g_Config.m_WcFinishProtection, &Button))
@@ -24,22 +32,25 @@ void CMenus::RenderSettingsWorstClient(CUIRect MainView)
 		g_Config.m_WcFinishProtection ^= 1;
 	}
 	GameClient()->m_Tooltips.DoToolTip(&g_Config.m_WcFinishProtection, &Button, Localize("While a race is running, automatically kills your tee when it is at risk of finishing the race"));
-
-	CUIRect Label;
-	MainView.HSplitTop(10.0f, nullptr, &MainView);
-	TextRender()->TextColor(1.0f, 1.0f, 1.0f, 0.6f);
-	const char *apDescriptions[] = {
-		Localize("Kills your tee when it is less than 32 units away from the closest finish tile."),
-		Localize("Also kills your tee when a finish tile would be touched within the next 10 ticks, based on your current movement."),
-		Localize("Sends \"kill\" and \"say /kill\" to the server."),
-	};
-	for(const char *pDescription : apDescriptions)
-	{
-		MainView.HSplitTop(16.0f, &Label, &MainView);
-		s_ScrollRegion.AddRect(Label);
-		Ui()->DoLabel(&Label, pDescription, 12.0f, TEXTALIGN_TL);
-	}
 	TextRender()->TextColor(TextRender()->DefaultTextColor());
+
+	// management
+	MainView.HSplitTop(20.0f, nullptr, &MainView);
+	MainView.HSplitTop(30.0f, &Label, &MainView);
+	s_ScrollRegion.AddRect(Label);
+	Ui()->DoLabel(&Label, Localize("Management"), 20.0f, TEXTALIGN_ML);
+	MainView.HSplitTop(5.0f, nullptr, &MainView);
+
+	MainView.HSplitTop(20.0f, &Button, &MainView);
+	s_ScrollRegion.AddRect(Button);
+	static CButtonContainer s_SettingsFileButton;
+	if(DoButton_Menu(&s_SettingsFileButton, Localize("Settings file"), 0, &Button))
+	{
+		char aBuf[IO_MAX_PATH_LENGTH];
+		Storage()->GetCompletePath(IStorage::TYPE_SAVE, CONFIG_FILE_WORSTCLIENT, aBuf, sizeof(aBuf));
+		Client()->ViewFile(aBuf);
+	}
+	GameClient()->m_Tooltips.DoToolTip(&s_SettingsFileButton, &Button, Localize("Open settings_worstclient.cfg, which stores the settings of WorstClient"));
 
 	s_ScrollRegion.End();
 }

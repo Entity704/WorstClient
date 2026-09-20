@@ -395,6 +395,7 @@ bool CConfigManager::SaveFile(EConfigFile File)
 	if(!m_ConfigFile)
 	{
 		log_error("config", "ERROR: opening %s failed", aConfigFileTmp);
+		m_pSaveErrorFile = pFilename;
 		return false;
 	}
 
@@ -447,12 +448,14 @@ bool CConfigManager::SaveFile(EConfigFile File)
 
 	if(m_Failed)
 	{
+		m_pSaveErrorFile = pFilename;
 		return false;
 	}
 
 	if(!m_pStorage->RenameFile(aConfigFileTmp, pFilename, IStorage::TYPE_SAVE))
 	{
 		log_error("config", "ERROR: renaming %s to %s failed", aConfigFileTmp, pFilename);
+		m_pSaveErrorFile = pFilename;
 		return false;
 	}
 
@@ -464,6 +467,8 @@ bool CConfigManager::Save()
 {
 	if(!m_pStorage || !g_Config.m_ClSaveSettings)
 		return true;
+
+	m_pSaveErrorFile = nullptr;
 
 	// The fork settings are saved even if the main file failed, so that a problem with one file does not
 	// silently drop the settings of the other one.

@@ -18,6 +18,11 @@ public:
 	virtual void SetReadOnly(const char *pScriptName, bool ReadOnly) = 0;
 	virtual void SetGameSettingsReadOnly(bool ReadOnly) = 0;
 	virtual bool Save() = 0;
+	/**
+	 * Returns the file name of the config file that could not be saved by the last call to
+	 * @link Save @endlink, or nullptr if the last save succeeded.
+	 */
+	virtual const char *SaveErrorFile() const = 0;
 	virtual class CConfig *Values() = 0;
 
 	virtual void RegisterCallback(SAVECALLBACKFUNC pfnFunc, void *pUserData) = 0;

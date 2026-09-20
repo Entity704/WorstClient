@@ -249,6 +249,9 @@ class CConfigManager : public IConfigManager
 
 	IOHANDLE m_ConfigFile;
 	bool m_Failed;
+	// The config file that could not be written by the last call to Save, or nullptr if it succeeded.
+	// There is more than one config file, so the caller cannot tell from the return value alone which one failed.
+	const char *m_pSaveErrorFile = nullptr;
 
 	struct SCallback
 	{
@@ -293,6 +296,7 @@ public:
 	void SetReadOnly(const char *pScriptName, bool ReadOnly) override;
 	void SetGameSettingsReadOnly(bool ReadOnly) override;
 	bool Save() override;
+	const char *SaveErrorFile() const override { return m_pSaveErrorFile; }
 	CConfig *Values() override { return &g_Config; }
 
 	void RegisterCallback(SAVECALLBACKFUNC pfnFunc, void *pUserData) override;
