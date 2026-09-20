@@ -616,6 +616,9 @@ protected:
 	CLineInputBuffered<protocol7::MAX_SKIN_ARRAY_SIZE, protocol7::MAX_SKIN_LENGTH> m_SkinNameInput;
 	bool m_SkinPartListNeedsUpdate = false;
 
+	// found in menus_settings_worstclient.cpp
+	void RenderSettingsWorstClient(CUIRect MainView);
+
 	std::vector<CButtonContainer> m_vButtonContainersNamePlateShow = {{}, {}, {}, {}};
 	std::vector<CButtonContainer> m_vButtonContainersNamePlateKeyPresses = {{}, {}, {}, {}};
 	std::vector<CButtonContainer> m_vButtonContainersAntiPingPlayers = {{}, {}, {}};
@@ -716,6 +719,7 @@ public:
 		SETTINGS_DDNET,
 		SETTINGS_ASSETS,
 		SETTINGS_CREDITS,
+		SETTINGS_WORSTCLIENT,
 
 		SETTINGS_LENGTH,
 	};

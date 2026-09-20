@@ -69,6 +69,7 @@
 #include "components/tooltips.h"
 #include "components/touch_controls.h"
 #include "components/voting.h"
+#include "components/worstclient.h"
 
 #include <memory>
 #include <vector>
@@ -199,6 +200,9 @@ public:
 	CTooltips m_Tooltips;
 
 	CLocalServer m_LocalServer;
+
+	// WorstClient features
+	CWorstClient m_WorstClient;
 
 private:
 	std::vector<class CComponent *> m_vpAll;

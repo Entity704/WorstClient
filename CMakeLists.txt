@@ -2718,6 +2718,7 @@ if(CLIENT)
     components/menus_settings_sound.cpp
     components/menus_settings_tee.cpp
     components/menus_settings_tee7.cpp
+    components/menus_settings_worstclient.cpp
     components/menus_start.cpp
     components/menus_start.h
     components/motd.cpp
@@ -2748,6 +2749,8 @@ if(CLIENT)
     components/touch_controls.h
     components/voting.cpp
     components/voting.h
+    components/worstclient.cpp
+    components/worstclient.h
     gameclient.cpp
     gameclient.h
     laser_data.cpp
