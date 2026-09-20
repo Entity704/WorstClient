@@ -2692,3 +2692,21 @@ Always predict frozen players
 
 No country flags match your filter criteria
 == 
+
+WorstClient
+== WorstClient
+
+Finish Protection (auto suicide when at risk of finishing)
+== 通关保护（有通关的风险时自动自杀）
+
+While a race is running, automatically kills your tee when it is at risk of finishing the race
+== 过起点后，当 Tee 有通关风险时自动自杀
+
+Kills your tee when it is less than 32 units away from the closest finish tile.
+== 当 Tee 与最近的终点图块距离小于 32 单位（一格）时自杀
+
+Also kills your tee when a finish tile would be touched within the next 10 ticks, based on your current movement.
+== 若预测到 Tee 在接下来 10 个 tick 内会碰到终点图块，也会自杀
+
+Sends "kill" and "say /kill" to the server.
+== 会执行 “kill” 和 “say /kill”
