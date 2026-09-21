@@ -427,10 +427,10 @@ int CControls::SnapInput(int *pData)
 		CNetObj_PlayerInput &Input = m_aInputData[g_Config.m_ClDummy];
 		const CNetObj_PlayerInput &LastInput = m_aLastData[g_Config.m_ClDummy];
 
-		if(Input.m_Jump && !LastInput.m_Jump && random_float() < 0.5f)
+		if(Input.m_Jump && !LastInput.m_Jump && random_float() < 0.2f)
 			Input.m_Jump = 0;
 
-		if(CountInput(LastInput.m_Fire, Input.m_Fire).m_Presses && random_float() < 0.5f)
+		if(CountInput(LastInput.m_Fire, Input.m_Fire).m_Presses && random_float() < 0.2f)
 			Input.m_Fire = LastInput.m_Fire;
 
 		// check if we need to send input
