@@ -63,6 +63,10 @@ private:
 	int m_ShiftPresses = 0;
 	int64_t m_FirstShiftPress = 0;
 
+	vec2 m_MouseDrift = vec2(0.0f, 0.0f);
+	vec2 m_MouseDriftTarget = vec2(0.0f, 0.0f);
+	int m_MouseDriftTick = -1;
+
 	static void ConKeyInputState(IConsole::IResult *pResult, void *pUserData);
 	static void ConKeyInputCounter(IConsole::IResult *pResult, void *pUserData);
 	static void ConKeyInputSet(IConsole::IResult *pResult, void *pUserData);

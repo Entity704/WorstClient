@@ -42,6 +42,9 @@ void CControls::OnReset()
 
 	std::fill(std::begin(m_aAmmoCount), std::end(m_aAmmoCount), 0);
 
+	m_MouseDrift = vec2(0.0f, 0.0f);
+	m_MouseDriftTarget = vec2(0.0f, 0.0f);
+
 	m_LastSendTime = 0;
 }
 
@@ -483,6 +486,17 @@ void CControls::OnRender()
 				m_aInputData[g_Config.m_ClDummy].m_WantedWeapon = Weapon + 1;
 		}
 	}
+
+	constexpr float DriftStep = 8.0f;
+	constexpr float DriftInertia = 0.25f;
+	if(Client()->GameTick(g_Config.m_ClDummy) / 2 != m_MouseDriftTick)
+	{
+		m_MouseDriftTick = Client()->GameTick(g_Config.m_ClDummy) / 2;
+		m_MouseDriftTarget += vec2(random_float(-DriftStep, DriftStep), random_float(-DriftStep, DriftStep));
+	}
+	const vec2 PrevDrift = m_MouseDrift;
+	m_MouseDrift += (m_MouseDriftTarget - m_MouseDrift) * std::clamp(Client()->RenderFrameTime() / DriftInertia, 0.0f, 1.0f);
+	m_aMousePos[g_Config.m_ClDummy] += m_MouseDrift - PrevDrift;
 
 	// update target pos
 	if(GameClient()->m_Snap.m_pGameInfoObj && !GameClient()->m_Snap.m_SpecInfo.m_Active)
