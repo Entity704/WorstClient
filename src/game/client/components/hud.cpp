@@ -929,8 +929,9 @@ void CHud::RenderPlayerState(const int ClientId)
 		constexpr float aWeaponWidth[NUM_WEAPONS] = {16, 12, 12, 12, 12, 12};
 		constexpr float aWeaponInitialOffset[NUM_WEAPONS] = {-3, -4, -1, -1, -2, -4};
 		bool InitialOffsetAdded = false;
-		for(int Weapon = 0; Weapon < NUM_WEAPONS; ++Weapon)
+		for(int Slot = 0; Slot < NUM_WEAPONS; ++Slot)
 		{
+			const int Weapon = Slot < NUM_WEAPONS - 1 ? GameClient()->m_Controls.WeaponForSlot(Slot) : WEAPON_NINJA;
 			if(!pCharacter->m_aWeapons[Weapon].m_Got)
 				continue;
 			if(!InitialOffsetAdded)
