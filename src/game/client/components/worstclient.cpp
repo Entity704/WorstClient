@@ -1,7 +1,5 @@
 #include "worstclient.h"
 
-#include <algorithm>
-
 #include <base/str.h>
 
 #include <engine/console.h>
@@ -9,6 +7,8 @@
 
 #include <game/client/gameclient.h>
 #include <game/mapitems.h>
+
+#include <algorithm>
 
 void CWorstClient::OnReset()
 {
