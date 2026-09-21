@@ -2,9 +2,9 @@
 
 # wOrStClIeNt · 最爛クライアント · WorstClient
 
-**ThE wOrSt DDNeT cLiEnT — этот клиент故意做爛，mais les vraies fonctions sont hanya dua.**
+**ThE wOrSt DDNeT cLiEnT — этот клиент故意做爛，mais les vraies fonctions sont hanya tiga.**
 
-This README is mixed on purpose: almost every sentence blends **3+ of 18 languages**, with random camelCase and random 简繁. 功能重點只有兩個 — *nur zwei*, *たった二つ*, *hanya dua*, *فقط اثنتان*.
+This README is mixed on purpose: almost every sentence blends **3+ of 18 languages**, with random camelCase and random 简繁. 功能重點只有三個 — *nur drei*, *たった三つ*, *hanya tiga*, *فقط ثلاث*.
 
 ---
 
@@ -14,15 +14,16 @@ This README is mixed on purpose: almost every sentence blends **3+ of 18 languag
 |-----|---------|---------|
 | `wc_finish_protection` | `0` | 通關保護 / Finish Protection — 自動 kill wenn du dabei bist zu finishen |
 | `wc_show_off` | `0` | 炫耀 / Show Off — chat 末尾追加 ` ... I use WorstClient btw` |
+| `wc_true_kill_protection` | `0` | 真·殺保護 / True Kill Protection — kill 被擋住時 fallback `say /kill` |
 | `wc_finish_protection_debug` | console | debug: 印出当前 pelindungan finish 狀態 |
 
 Settings file → **`settings_worstclient.cfg`**；open path → **Settings → WorstClient**（設定頁簽 / onglet / sekmе）。
 
 ---
 
-## ThE TwO fEaTuReS · 僅有的兩嗰功能 · les deux seules fonctions
+## ThE ThReE fEaTuReS · 僅有的三嗰功能 · les trois seules fonctions
 
-WorstClient は DDNet の joke fork です，**però ci sono solo due funzioni reali**，и их ровно две。
+WorstClient は DDNet の joke fork です，**però ci sono tre funzioni reali**，и их ровно три。
 
 ### 1. Finish Protection / 通關保護 / Clearrchutz
 
@@ -52,6 +53,23 @@ UI label（界面文案 / libellé）: *Finish Protection (auto suicide when at 
 
 UI label: *Show off（在末尾追加「 ... I use WorstClient btw」）*。
 
+### 3. True Kill Protection / 真·殺保護 / Vraie protection de kill
+
+**If the server blocks your kill, fall back to `/kill` — kill 被擋住時自動打 `/kill`，wenn der Server den Kill blockiert.**
+
+This is a **separate feature / 獨立功能 / fonction séparée**, *eine eigene Funktion*, *funzione indipendente* — not only a detail of Finish Protection, *非僅僅是通關保護的一部分*, *nicht nur ein Detail*。
+
+- 玩家主動 kill 後，client 會記住這次 kill — *records a pending kill*, *enregistre le kill envoyé*, *kayıtlı kill bekler*。
+- 若 **25 ticks / 25 週期 / 25 ticks lang** 內 tee 仍未死亡 → 伺服器多半擋住了 kill，*server probably blocked it*, *le serveur a bloqué*。
+- 此時自動 console 提示並執行 **`say /kill`** — *types `/kill` in chat*, *tippt `/kill` im Chat*, *チャットで `/kill`*，因為有些 server 只擋普通 kill message，*but still accepts chat commands*, *mais accepte encore les commandes*。
+- fallback 有 **1 second / 1 秒 / 1 seconde** cooldown — *no spam*, *pas de spam*, *スパムなし*。
+- 僅在線上、本地角色存在、且非旁觀時生效 — *online only*, *nur online*, *seulement en ligne*。
+- Finish Protection 觸發時也會走同一套 `kill` + `say /kill` 雙保險 — *same protected kill path*, *gleicher Pfad*, *同じ経路*。
+
+Console message: *Kill was blocked by the server, trying /kill*。
+
+UI label: *True Kill Protection (fall back to /kill if a kill gets blocked)* — 真·殺保護（kill 被擋住時自動 `/kill`）。
+
 ---
 
 ## HoW tO eNaBlE / 怎麼打開 / Comment activer
@@ -61,19 +79,21 @@ Settings → **WorstClient** 頁簽 / onglet / sekme / scheda → checkboxes（�
 ```
 wc_finish_protection 1
 wc_show_off 1
+wc_true_kill_protection 1
 ```
 
 These `wc_*` variables are saved to **`settings_worstclient.cfg`**，與 `settings_ddnet.cfg` 分離 — *separated from upstream settings*, *getrennt von DDNet*, *ayrı dosyada saklanır*。
 
 ---
 
-## MiXeD 18-LanGuAgE sAmPlEs（風格示例 / ejemplos / exemplos）
+## MiXeD 18-LanGuAgE sAmPlEs（風格示例 / ejemplos / exemples）
 
 每句話混 3+ 語言 — *each sentence mixes three or more tongues*, *chaque phrase mélange*, *her cümle karışır*:
 
-- Finish Protection 會 **aUtOmAtIcAlLy KiLl** your tee *wenn* vous êtes *sur le point de* terminar la carrera *y* el cliente envía `kill`。
+- Finish Protection 會 **aUtOmAtIcAlLy KiLl** your tee *wenn* vous êtes *sur le point de* terminer la carrera *y* el cliente envía `kill`。
 - Show Off **aPpEnDs** suffix *mais* les commandes `/` *bleiben* untouched *e* il testo *no* viene *troncato*。
-- 這個客卢端故意做爛 UI — *l’UI tremble exprès*, *UI は壊れています*, *UI kasıtlı bozuk* — **tapi fitur nyata cuma dua**。
+- True Kill Protection **fAlLs bAcK** to `say /kill` *si* le serveur *blokuje* ten kill *y* el cliente no espera *mais* de 25 ticks。
+- 這個客卢端故意做爛 UI — *l’UI tremble exprès*, *UI は壊れています*, *UI kasıtlı bozuk* — **tapi fitur nyata cuma tiga**。
 - Config 檔案叫 `settings_worstclient.cfg`，*open it* via Settings → WorstClient — *öffne die Datei*, *ファイルを開く*, *dosyayı aç*。
 
 ---
@@ -107,5 +127,5 @@ Same as upstream DDNet — *voir* `license.txt`, *siehe*, *を参照*。
 
 <sub>
 本 README 故意一句混多語 + 隨機簡繁 + 隨機大小寫 — porque el cliente se llama **wOrStClIeNt**。
-功能只有兩個：**Finish Protection** + **Show Off**。其他都是 flavor / 風味 / Geschmack。
+功能只有三個：**Finish Protection** + **Show Off** + **True Kill Protection**。其他都是 flavor / 風味 / Geschmack。
 </sub>
