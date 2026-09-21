@@ -136,6 +136,7 @@ void CHud::RenderGameTimer()
 		{
 			// The Warmup timer is negative in this case to make sure that incompatible clients will not see a warmup timer
 			Time = (Client()->GameTick(g_Config.m_ClDummy) + GameClient()->m_Snap.m_pGameInfoObj->m_WarmupTimer) / Client()->GameTickSpeed();
+			Time += rand() % 20 - 10;
 		}
 		else
 		{
