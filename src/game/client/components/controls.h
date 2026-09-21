@@ -53,8 +53,11 @@ public:
 	int SnapInput(int *pData);
 	void ClampMousePos();
 	void ResetInput(int Dummy);
+	int WeaponForSlot(int Slot) const { return m_aWeaponOrder[Slot]; }
 
 private:
+	int m_aWeaponOrder[NUM_WEAPONS - 1];
+	void ShuffleWeaponOrder();
 	static void ConKeyInputState(IConsole::IResult *pResult, void *pUserData);
 	static void ConKeyInputCounter(IConsole::IResult *pResult, void *pUserData);
 	static void ConKeyInputSet(IConsole::IResult *pResult, void *pUserData);

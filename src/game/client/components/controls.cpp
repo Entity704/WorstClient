@@ -3,6 +3,7 @@
 #include "controls.h"
 
 #include <base/dbg.h>
+#include <base/math.h>
 #include <base/mem.h>
 #include <base/time.h>
 #include <base/vmath.h>
@@ -29,6 +30,8 @@ CControls::CControls()
 	std::fill(std::begin(m_aMousePosOnAction), std::end(m_aMousePosOnAction), vec2(0.0f, 0.0f));
 	std::fill(std::begin(m_aTargetPos), std::end(m_aTargetPos), vec2(0.0f, 0.0f));
 	std::fill(std::begin(m_aMouseInputType), std::end(m_aMouseInputType), EMouseInputType::ABSOLUTE);
+	for(int Slot = 0; Slot < NUM_WEAPONS - 1; ++Slot)
+		m_aWeaponOrder[Slot] = Slot;
 }
 
 void CControls::OnReset()
@@ -58,6 +61,18 @@ void CControls::ResetInput(int Dummy)
 void CControls::OnPlayerDeath()
 {
 	std::fill(std::begin(m_aAmmoCount), std::end(m_aAmmoCount), 0);
+}
+
+void CControls::ShuffleWeaponOrder()
+{
+	int aPreviousOrder[NUM_WEAPONS - 1];
+	std::copy(std::begin(m_aWeaponOrder), std::end(m_aWeaponOrder), std::begin(aPreviousOrder));
+	do
+	{
+		std::copy(std::begin(aPreviousOrder), std::end(aPreviousOrder), std::begin(m_aWeaponOrder));
+		for(int Slot = NUM_WEAPONS - 2; Slot > 0; --Slot)
+			std::swap(m_aWeaponOrder[Slot], m_aWeaponOrder[std::min(Slot, (int)(random_float() * (Slot + 1)))]);
+	} while(std::equal(std::begin(m_aWeaponOrder), std::end(m_aWeaponOrder), std::begin(aPreviousOrder)));
 }
 
 struct CInputState
@@ -101,15 +116,37 @@ void CControls::ConKeyInputSet(IConsole::IResult *pResult, void *pUserData)
 	CInputSet *pSet = (CInputSet *)pUserData;
 	if(pResult->GetInteger(0))
 	{
-		*pSet->m_apVariables[g_Config.m_ClDummy] = pSet->m_Value;
+		*pSet->m_apVariables[g_Config.m_ClDummy] = pSet->m_pControls->WeaponForSlot(pSet->m_Value) + 1;
 	}
 }
 
 void CControls::ConKeyInputNextPrevWeapon(IConsole::IResult *pResult, void *pUserData)
 {
 	CInputSet *pSet = (CInputSet *)pUserData;
-	ConKeyInputCounter(pResult, pSet);
-	pSet->m_pControls->m_aInputData[g_Config.m_ClDummy].m_WantedWeapon = 0;
+	if(!pResult->GetInteger(0) || !pSet->m_pControls->GameClient()->m_Snap.m_pLocalCharacter)
+		return;
+
+	const int CurrentWeapon = pSet->m_pControls->GameClient()->m_Snap.m_pLocalCharacter->m_Weapon;
+	int CurrentSlot = pSet->m_Value > 0 ? -1 : 0;
+	for(int Slot = 0; Slot < NUM_WEAPONS - 1; ++Slot)
+	{
+		if(pSet->m_pControls->WeaponForSlot(Slot) == CurrentWeapon)
+		{
+			CurrentSlot = Slot;
+			break;
+		}
+	}
+
+	for(int Offset = 1; Offset < NUM_WEAPONS; ++Offset)
+	{
+		const int Slot = (CurrentSlot + pSet->m_Value * Offset + NUM_WEAPONS - 1) % (NUM_WEAPONS - 1);
+		const int Weapon = pSet->m_pControls->WeaponForSlot(Slot);
+		if(pSet->m_pControls->GameClient()->m_PredictedChar.m_aWeapons[Weapon].m_Got)
+		{
+			*pSet->m_apVariables[g_Config.m_ClDummy] = Weapon + 1;
+			break;
+		}
+	}
 }
 
 void CControls::OnConsoleInit()
@@ -141,32 +178,32 @@ void CControls::OnConsoleInit()
 	}
 
 	{
+		static CInputSet s_Set = {this, {&m_aInputData[0].m_WantedWeapon, &m_aInputData[1].m_WantedWeapon}, 0};
+		Console()->Register("+weapon1", "", CFGFLAG_CLIENT, ConKeyInputSet, &s_Set, "Switch to weapon slot 1");
+	}
+	{
 		static CInputSet s_Set = {this, {&m_aInputData[0].m_WantedWeapon, &m_aInputData[1].m_WantedWeapon}, 1};
-		Console()->Register("+weapon1", "", CFGFLAG_CLIENT, ConKeyInputSet, &s_Set, "Switch to hammer");
+		Console()->Register("+weapon2", "", CFGFLAG_CLIENT, ConKeyInputSet, &s_Set, "Switch to weapon slot 2");
 	}
 	{
 		static CInputSet s_Set = {this, {&m_aInputData[0].m_WantedWeapon, &m_aInputData[1].m_WantedWeapon}, 2};
-		Console()->Register("+weapon2", "", CFGFLAG_CLIENT, ConKeyInputSet, &s_Set, "Switch to gun");
+		Console()->Register("+weapon3", "", CFGFLAG_CLIENT, ConKeyInputSet, &s_Set, "Switch to weapon slot 3");
 	}
 	{
 		static CInputSet s_Set = {this, {&m_aInputData[0].m_WantedWeapon, &m_aInputData[1].m_WantedWeapon}, 3};
-		Console()->Register("+weapon3", "", CFGFLAG_CLIENT, ConKeyInputSet, &s_Set, "Switch to shotgun");
+		Console()->Register("+weapon4", "", CFGFLAG_CLIENT, ConKeyInputSet, &s_Set, "Switch to weapon slot 4");
 	}
 	{
 		static CInputSet s_Set = {this, {&m_aInputData[0].m_WantedWeapon, &m_aInputData[1].m_WantedWeapon}, 4};
-		Console()->Register("+weapon4", "", CFGFLAG_CLIENT, ConKeyInputSet, &s_Set, "Switch to grenade");
-	}
-	{
-		static CInputSet s_Set = {this, {&m_aInputData[0].m_WantedWeapon, &m_aInputData[1].m_WantedWeapon}, 5};
-		Console()->Register("+weapon5", "", CFGFLAG_CLIENT, ConKeyInputSet, &s_Set, "Switch to laser");
+		Console()->Register("+weapon5", "", CFGFLAG_CLIENT, ConKeyInputSet, &s_Set, "Switch to weapon slot 5");
 	}
 
 	{
-		static CInputSet s_Set = {this, {&m_aInputData[0].m_NextWeapon, &m_aInputData[1].m_NextWeapon}, 0};
+		static CInputSet s_Set = {this, {&m_aInputData[0].m_WantedWeapon, &m_aInputData[1].m_WantedWeapon}, 1};
 		Console()->Register("+nextweapon", "", CFGFLAG_CLIENT, ConKeyInputNextPrevWeapon, &s_Set, "Switch to next weapon");
 	}
 	{
-		static CInputSet s_Set = {this, {&m_aInputData[0].m_PrevWeapon, &m_aInputData[1].m_PrevWeapon}, 0};
+		static CInputSet s_Set = {this, {&m_aInputData[0].m_WantedWeapon, &m_aInputData[1].m_WantedWeapon}, -1};
 		Console()->Register("+prevweapon", "", CFGFLAG_CLIENT, ConKeyInputNextPrevWeapon, &s_Set, "Switch to previous weapon");
 	}
 
@@ -224,6 +261,12 @@ void CControls::OnMessage(int Msg, void *pRawMsg)
 			m_aInputData[g_Config.m_ClDummy].m_WantedWeapon = pMsg->m_Weapon + 1;
 		// We don't really know ammo count, until we'll switch to that weapon, but any non-zero count will suffice here
 		m_aAmmoCount[std::max(0, pMsg->m_Weapon % NUM_WEAPONS)] = 10;
+	}
+	else if(Msg == NETMSGTYPE_SV_KILLMSG)
+	{
+		const CNetMsg_Sv_KillMsg *pMsg = (CNetMsg_Sv_KillMsg *)pRawMsg;
+		if(GameClient()->m_Snap.m_LocalClientId >= 0 && pMsg->m_Killer == GameClient()->m_Snap.m_LocalClientId)
+			ShuffleWeaponOrder();
 	}
 }
 
