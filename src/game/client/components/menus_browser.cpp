@@ -64,7 +64,8 @@ static void FormatServerbrowserPing(char (&aBuffer)[N], const CServerInfo *pInfo
 
 static ColorRGBA GetPingTextColor(int Latency)
 {
-	return color_cast<ColorRGBA>(ColorHSLA((300.0f - std::clamp(Latency, 0, 300)) / 1000.0f, 1.0f, 0.5f));
+	// reversed ping colour
+	return color_cast<ColorRGBA>(ColorHSLA((std::clamp(Latency, 0, 300)) / 1000.0f, 1.0f, 0.5f));
 }
 
 void CMenus::RenderServerbrowserServerList(CUIRect View, bool &WasListboxItemActivated)
