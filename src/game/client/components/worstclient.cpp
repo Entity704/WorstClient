@@ -1,5 +1,7 @@
 #include "worstclient.h"
 
+#include <algorithm>
+
 #include <base/str.h>
 
 #include <engine/console.h>
@@ -56,12 +58,9 @@ bool CWorstClient::TouchesFinishTile(vec2 Pos) const
 		Pos + vec2(-Offset, -Offset),
 		Pos + vec2(-Offset, Offset),
 	};
-	for(const vec2 &Point : aPoints)
-	{
-		if(IsFinishTile(Collision()->GetPureMapIndex(Point)))
-			return true;
-	}
-	return false;
+	return std::any_of(std::begin(aPoints), std::end(aPoints), [this](const vec2 &Point) {
+		return IsFinishTile(Collision()->GetPureMapIndex(Point));
+	});
 }
 
 float CWorstClient::DistanceToClosestFinishTile(vec2 Pos) const
