@@ -4,13 +4,14 @@
 
 #include <engine/graphics.h>
 
-IGraphics *CUIRect::ms_pGraphics = nullptr;
+#include <game/client/worstclient_math.h>
 
-constexpr float ShakeStrength = 0.5f;
+IGraphics *CUIRect::ms_pGraphics = nullptr;
 
 void CUIRect::HSplitMid(CUIRect *pTop, CUIRect *pBottom, float Spacing) const
 {
 	CUIRect r = *this;
+	const float ShakeStrength = WorstnessInterpolation(0.0f, 1.0f, EASE_LINEAR);
 	const float Cut = r.h / 2 + random_float(-ShakeStrength, ShakeStrength);
 	const float HalfSpacing = Spacing / 2;
 
@@ -35,6 +36,7 @@ void CUIRect::HSplitTop(float Cut, CUIRect *pTop, CUIRect *pBottom) const
 {
 	CUIRect r = *this;
 
+	const float ShakeStrength = WorstnessInterpolation(0.0f, 1.0f, EASE_LINEAR);
 	Cut += random_float(-ShakeStrength, ShakeStrength);
 
 	if(pTop)
@@ -58,6 +60,7 @@ void CUIRect::HSplitBottom(float Cut, CUIRect *pTop, CUIRect *pBottom) const
 {
 	CUIRect r = *this;
 
+	const float ShakeStrength = WorstnessInterpolation(0.0f, 1.0f, EASE_LINEAR);
 	Cut += random_float(-ShakeStrength, ShakeStrength);
 
 	if(pTop)
@@ -80,6 +83,7 @@ void CUIRect::HSplitBottom(float Cut, CUIRect *pTop, CUIRect *pBottom) const
 void CUIRect::VSplitMid(CUIRect *pLeft, CUIRect *pRight, float Spacing) const
 {
 	CUIRect r = *this;
+	const float ShakeStrength = WorstnessInterpolation(0.0f, 1.0f, EASE_LINEAR);
 	const float Cut = r.w / 2 + random_float(-ShakeStrength, ShakeStrength);
 	const float HalfSpacing = Spacing / 2;
 
@@ -104,6 +108,7 @@ void CUIRect::VSplitLeft(float Cut, CUIRect *pLeft, CUIRect *pRight) const
 {
 	CUIRect r = *this;
 
+	const float ShakeStrength = WorstnessInterpolation(0.0f, 1.0f, EASE_LINEAR);
 	Cut += random_float(-ShakeStrength, ShakeStrength);
 
 	if(pLeft)
@@ -127,6 +132,7 @@ void CUIRect::VSplitRight(float Cut, CUIRect *pLeft, CUIRect *pRight) const
 {
 	CUIRect r = *this;
 
+	const float ShakeStrength = WorstnessInterpolation(0.0f, 1.0f, EASE_LINEAR);
 	Cut += random_float(-ShakeStrength, ShakeStrength);
 
 	if(pLeft)

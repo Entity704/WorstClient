@@ -431,10 +431,12 @@ int CControls::SnapInput(int *pData)
 		CNetObj_PlayerInput &Input = m_aInputData[g_Config.m_ClDummy];
 		const CNetObj_PlayerInput &LastInput = m_aLastData[g_Config.m_ClDummy];
 
-		if(Input.m_Jump && !LastInput.m_Jump && random_float() < 0.2f)
+		const float FailureRate = WorstnessInterpolation(0.0, 0.98, EASE_CUBIC_IN);
+
+		if(Input.m_Jump && !LastInput.m_Jump && random_float() < FailureRate)
 			Input.m_Jump = 0;
 
-		if(CountInput(LastInput.m_Fire, Input.m_Fire).m_Presses && random_float() < 0.2f)
+		if(CountInput(LastInput.m_Fire, Input.m_Fire).m_Presses && random_float() < FailureRate)
 			Input.m_Fire = LastInput.m_Fire;
 
 		// check if we need to send input
@@ -490,7 +492,7 @@ void CControls::OnRender()
 
 	constexpr float DriftInertia = 0.25f;
 	float DriftStep = WorstnessInterpolation(0.0f, 16.0f, EASE_LINEAR);
-	if(Client()->GameTick(g_Config.m_ClDummy) / 2 != m_MouseDriftTick)
+	if((Client()->GameTick(g_Config.m_ClDummy) / 2 != m_MouseDriftTick) && DriftInertia > 1e-4f) // eps icu!!!
 	{
 		m_MouseDriftTick = Client()->GameTick(g_Config.m_ClDummy) / 2;
 		m_MouseDriftTarget += vec2(random_float(-DriftStep, DriftStep), random_float(-DriftStep, DriftStep));

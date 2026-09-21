@@ -16,6 +16,7 @@
 #include <engine/keys.h>
 #include <engine/shared/config.h>
 
+#include <game/client/worstclient_math.h>
 #include <game/localization.h>
 
 #include <limits>
@@ -534,7 +535,7 @@ int CUi::DoButtonLogic(const void *pId, int Checked, const CUIRect *pRect, const
 		{
 			if(Inside && Checked >= 0)
 			{
-				if(rand() % 100 >= 50)
+				if(random_float() >= WorstnessInterpolation(0.0f, 0.98f, EASE_LINEAR))
 					ReturnValue = 1 + m_ActiveButtonLogicButton;
 			}
 			SetActiveItem(nullptr);
@@ -582,7 +583,7 @@ int CUi::DoDraggableButtonLogic(const void *pId, int Checked, const CUIRect *pRe
 			{
 				if(Inside && Checked >= 0)
 				{
-					if(rand() % 100 >= 50)
+					if(random_float() >= WorstnessInterpolation(0.0f, 0.98f, EASE_LINEAR))
 						*pClicked = true;
 				}
 				SetActiveItem(nullptr);

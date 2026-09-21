@@ -21,6 +21,7 @@
 
 #include <generated/data_types.h>
 
+#include <game/client/worstclient_math.h>
 #include <game/localization.h>
 
 #if defined(CONF_VIDEORECORDER)
@@ -1040,10 +1041,13 @@ void CGraphics_Threaded::DrawRectExt(float x, float y, float w, float h, float r
 		float Sa2 = std::sin(a2);
 		float Sa3 = std::sin(a3);
 
-		float RTopLeft = random_float(r * 0.5f, r * 1.5f);
-		float RTopRight = random_float(r * 0.5f, r * 1.5f);
-		float RBottomLeft = random_float(r * 0.5f, r * 1.5f);
-		float RBottomRight = random_float(r * 0.5f, r * 1.5f);
+		float MinFactor = WorstnessInterpolation(1.0f, 0.0f, EASE_LINEAR);
+		float MaxFactor = WorstnessInterpolation(1.0f, 1.5f, EASE_LINEAR);
+
+		float RTopLeft = random_float(r * MinFactor, r * MaxFactor);
+		float RTopRight = random_float(r * MinFactor, r * MaxFactor);
+		float RBottomLeft = random_float(r * MinFactor, r * MaxFactor);
+		float RBottomRight = random_float(r * MinFactor, r * MaxFactor);
 
 		if(Corners & CORNER_TL)
 			aFreeform[NumItems++] = IGraphics::CFreeformItem(
@@ -1119,10 +1123,13 @@ void CGraphics_Threaded::DrawRectExt4(float x, float y, float w, float h, ColorR
 		float Sa2 = std::sin(a2);
 		float Sa3 = std::sin(a3);
 
-		float RTopLeft = random_float(r * 0.5f, r * 1.5f);
-		float RTopRight = random_float(r * 0.5f, r * 1.5f);
-		float RBottomLeft = random_float(r * 0.5f, r * 1.5f);
-		float RBottomRight = random_float(r * 0.5f, r * 1.5f);
+		float MinFactor = WorstnessInterpolation(1.0f, 0.0f, EASE_LINEAR);
+		float MaxFactor = WorstnessInterpolation(1.0f, 1.5f, EASE_LINEAR);
+
+		float RTopLeft = random_float(r * MinFactor, r * MaxFactor);
+		float RTopRight = random_float(r * MinFactor, r * MaxFactor);
+		float RBottomLeft = random_float(r * MinFactor, r * MaxFactor);
+		float RBottomRight = random_float(r * MinFactor, r * MaxFactor);
 
 		if(Corners & CORNER_TL)
 		{
@@ -1248,10 +1255,13 @@ int CGraphics_Threaded::CreateRectQuadContainer(float x, float y, float w, float
 		float Sa2 = std::sin(a2);
 		float Sa3 = std::sin(a3);
 
-		float RTopLeft = random_float(r * 0.5f, r * 1.5f);
-		float RTopRight = random_float(r * 0.5f, r * 1.5f);
-		float RBottomLeft = random_float(r * 0.5f, r * 1.5f);
-		float RBottomRight = random_float(r * 0.5f, r * 1.5f);
+		float MinFactor = WorstnessInterpolation(1.0f, 0.0f, EASE_LINEAR);
+		float MaxFactor = WorstnessInterpolation(1.0f, 1.5f, EASE_LINEAR);
+
+		float RTopLeft = random_float(r * MinFactor, r * MaxFactor);
+		float RTopRight = random_float(r * MinFactor, r * MaxFactor);
+		float RBottomLeft = random_float(r * MinFactor, r * MaxFactor);
+		float RBottomRight = random_float(r * MinFactor, r * MaxFactor);
 
 		if(Corners & CORNER_TL)
 			aFreeform[NumItems++] = IGraphics::CFreeformItem(
