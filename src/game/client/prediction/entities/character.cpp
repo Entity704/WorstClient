@@ -9,6 +9,7 @@
 
 #include <generated/client_data.h>
 
+#include <game/client/worstclient_math.h>
 #include <game/collision.h>
 #include <game/mapitems.h>
 
@@ -618,15 +619,16 @@ void CCharacter::PreTick()
 // WorstClient: fake lag spike, see CCharacter::Tick
 static constexpr int FAKE_LAG_INTERVAL_TICKS = 25; // one spike every ~N s
 static constexpr int FAKE_LAG_DURATION_TICKS = 10; // how long a spike lasts
-static constexpr float FAKE_LAG_VEL_BIAS = 1.0f; // maximum velocity offset added per axis, in units per tick
 
 void CCharacter::Tick()
 {
 	// WorstClient: shove the predicted velocity in a random direction for a few ticks, so the tee keeps
 	// popping away from the server position until the next snapshot corrects it.
 	const int Tick = GameWorld()->GameTick();
-	if(Tick > 0 && Tick % FAKE_LAG_INTERVAL_TICKS < FAKE_LAG_DURATION_TICKS)
-		m_Core.m_Vel += vec2(random_float(-FAKE_LAG_VEL_BIAS, FAKE_LAG_VEL_BIAS), random_float(-FAKE_LAG_VEL_BIAS, FAKE_LAG_VEL_BIAS));
+	if(Tick > 0 && Tick % FAKE_LAG_INTERVAL_TICKS < FAKE_LAG_DURATION_TICKS) {
+		float FakeLagVelBias = WorstnessInterpolation(0.0f, 16.0f, EASE_CUBIC_IN);
+		m_Core.m_Vel += vec2(random_float(-FakeLagVelBias, FakeLagVelBias), random_float(-FakeLagVelBias, FakeLagVelBias));
+	}
 
 	if(m_pGameWorld->m_WorldConfig.m_NoWeakHookAndBounce)
 	{
