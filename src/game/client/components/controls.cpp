@@ -19,6 +19,7 @@
 #include <game/client/components/menus.h>
 #include <game/client/components/scoreboard.h>
 #include <game/client/gameclient.h>
+#include <game/client/worstclient_math.h>
 #include <game/collision.h>
 #include <game/localization.h>
 
@@ -487,8 +488,8 @@ void CControls::OnRender()
 		}
 	}
 
-	constexpr float DriftStep = 8.0f;
 	constexpr float DriftInertia = 0.25f;
+	float DriftStep = WorstnessInterpolation(0.0f, 16.0f, EASE_LINEAR);
 	if(Client()->GameTick(g_Config.m_ClDummy) / 2 != m_MouseDriftTick)
 	{
 		m_MouseDriftTick = Client()->GameTick(g_Config.m_ClDummy) / 2;

@@ -4,6 +4,8 @@
 
 #include <base/math.h>
 
+#include <engine/shared/config.h>
+
 #include <algorithm>
 #include <numbers>
 
@@ -15,9 +17,11 @@ enum EEaseType
 	EASE_COSINE,
 };
 
-inline float WorstnessInterpolation(float Value, float Start, float End, EEaseType EaseType)
+constexpr float WORSTNESS_CONFIG_MAX = 10000.0f;
+
+inline float WorstnessInterpolation(float Start, float End, EEaseType EaseType)
 {
-	const float T = std::clamp(Value, 0.0f, 1.0f);
+	const float T = std::clamp(g_Config.m_WcWorstness / WORSTNESS_CONFIG_MAX, 0.0f, 1.0f);
 	float Eased = T;
 	switch(EaseType)
 	{
@@ -31,7 +35,7 @@ inline float WorstnessInterpolation(float Value, float Start, float End, EEaseTy
 		Eased = 1.0f - (1.0f - T) * (1.0f - T) * (1.0f - T);
 		break;
 	case EASE_COSINE:
-		Eased = (1.0f - std::cos(std::numbers::pi_v<float> * T)) * 0.5f; // the fake pi :omo:
+		Eased = (1.0f - std::cos(std::numbers::pi_v<float> * T)) * 0.5f; // the fake pi lol
 		break;
 	}
 	return mix(Start, End, Eased);

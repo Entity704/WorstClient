@@ -3499,7 +3499,6 @@ if((GTEST_FOUND OR DOWNLOAD_GTEST) AND SERVER)
     uuid_test.cpp
     vmath_test.cpp
     windows_test.cpp
-    worstclient_math_test.cpp
     # tidy-alphabetical-end
   )
   set(TESTS_EXTRA
