@@ -54,6 +54,13 @@ void CMenus::RenderSettingsWorstClient(CUIRect MainView)
 	}
 	GameClient()->m_Tooltips.DoToolTip(&g_Config.m_WcShowOff, &Button, Localize("Appends \" ... I use WorstClient btw\" to every chat message you send. Commands like /pause are not affected"));
 
+	LeftPanel.HSplitTop(LineSize, &Button, &LeftPanel);
+	if(DoButton_CheckBox(&g_Config.m_WcTrueKillProtection, Localize("True Kill Protection (fall back to /kill if a kill gets blocked)"), g_Config.m_WcTrueKillProtection, &Button))
+	{
+		g_Config.m_WcTrueKillProtection ^= 1;
+	}
+	GameClient()->m_Tooltips.DoToolTip(&g_Config.m_WcTrueKillProtection, &Button, Localize("When the server does not carry out a kill, automatically types /kill in chat"));
+
 	// management
 	s_ScrollRegion.AddRect(RightPanel);
 	RightPanel.Draw(ColorRGBA(1.0f, 1.0f, 1.0f, 0.2f), IGraphics::CORNER_ALL, 10.0f);

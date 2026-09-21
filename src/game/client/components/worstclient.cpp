@@ -16,6 +16,8 @@ void CWorstClient::OnReset()
 	// OnMapLoad when connecting, which would immediately discard the cache.
 	m_LastCheckedTick = -1;
 	m_KilledForCurrentRisk = false;
+	m_KillPendingTick = -1;
+	m_KillFallbackTick = -1;
 }
 
 void CWorstClient::OnMapLoad()
@@ -124,6 +126,57 @@ bool CWorstClient::AppendShowOffSuffix(char *pBuf, size_t BufSize, const char *p
 
 void CWorstClient::OnUpdate()
 {
+	UpdateTrueKillProtection();
+	UpdateFinishProtection();
+}
+
+void CWorstClient::OnKillSent()
+{
+	if(!g_Config.m_WcTrueKillProtection || Client()->State() != IClient::STATE_ONLINE)
+		return;
+	const CGameClient *pGameClient = GameClient();
+	if(pGameClient->m_Snap.m_LocalClientId == -1 || pGameClient->m_Snap.m_pLocalCharacter == nullptr || pGameClient->m_Snap.m_SpecInfo.m_Active)
+		return;
+
+	m_KillPendingTick = Client()->GameTick(g_Config.m_ClDummy);
+}
+
+void CWorstClient::UpdateTrueKillProtection()
+{
+	if(!g_Config.m_WcTrueKillProtection || Client()->State() != IClient::STATE_ONLINE)
+	{
+		m_KillPendingTick = -1;
+		return;
+	}
+	if(m_KillPendingTick < 0)
+		return;
+
+	if(GameClient()->m_Snap.m_pLocalCharacter == nullptr)
+	{
+		m_KillPendingTick = -1;
+		return;
+	}
+
+	const int Tick = Client()->GameTick(g_Config.m_ClDummy);
+	if(Tick - m_KillPendingTick < KILL_CONFIRM_TICKS)
+		return;
+	m_KillPendingTick = -1;
+
+	if(m_KillFallbackTick >= 0 && Tick - m_KillFallbackTick < Client()->GameTickSpeed())
+		return;
+
+	Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "worstclient", "Kill was blocked by the server, trying /kill");
+	SendProtectedKill();
+}
+
+void CWorstClient::SendProtectedKill()
+{
+	m_KillFallbackTick = Client()->GameTick(g_Config.m_ClDummy);
+	Console()->ExecuteLine("say /kill", IConsole::CLIENT_ID_UNSPECIFIED);
+}
+
+void CWorstClient::UpdateFinishProtection()
+{
 	if(!g_Config.m_WcFinishProtection)
 		return;
 
@@ -162,7 +215,7 @@ void CWorstClient::OnUpdate()
 	Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "worstclient", aBuf);
 
 	Console()->ExecuteLine("kill", IConsole::CLIENT_ID_UNSPECIFIED);
-	Console()->ExecuteLine("say /kill", IConsole::CLIENT_ID_UNSPECIFIED);
+	SendProtectedKill();
 }
 
 void CWorstClient::OnConsoleInit()

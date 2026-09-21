@@ -3306,8 +3306,10 @@ void CGameClient::SendDummyInfo(bool Start)
 	}
 }
 
-void CGameClient::SendKill() const
+void CGameClient::SendKill() // NOLINT(readability-make-member-function-const)
 {
+	m_WorstClient.OnKillSent();
+
 	CNetMsg_Cl_Kill Msg;
 	Client()->SendPackMsgActive(&Msg, MSGFLAG_VITAL);
 

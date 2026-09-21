@@ -2716,3 +2716,9 @@ Show off (append " ... I use WorstClient btw" to chat messages)
 
 Appends " ... I use WorstClient btw" to every chat message you send. Commands like /pause are not affected
 == 在你发送的每条聊天信息末尾追加“ ... I use WorstClient btw”。指令（如 /pause）不受影响
+
+True Kill Protection (fall back to /kill if a kill gets blocked)
+== 真·自杀保护（自杀被拦截时自动尝试 /kill）
+
+When the server does not carry out a kill, automatically types /kill in chat. The server ignores that command unless its kill protection is what blocked you, so nothing is sent to servers without it
+== 当自杀被拦截时，自动尝试发送 /kill
