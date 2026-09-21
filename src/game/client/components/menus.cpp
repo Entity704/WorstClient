@@ -2394,6 +2394,11 @@ void CMenus::OnRender()
 		{
 			SetActive(true);
 		}
+		else if(m_Popup != POPUP_NONE && Client()->State() == IClient::STATE_ONLINE)
+		{
+			SetActive(true);
+			m_PopupOpenedMenu = true;
+		}
 		else if(Client()->State() != IClient::STATE_DEMOPLAYBACK)
 		{
 			Ui()->ClearHotkeys();
@@ -2415,6 +2420,13 @@ void CMenus::OnRender()
 	{
 		Ui()->RenderBackButton();
 		RenderTools()->RenderCursor(Ui()->MousePos(), 24.0f);
+	}
+
+	if(m_PopupOpenedMenu && m_Popup == POPUP_NONE)
+	{
+		m_PopupOpenedMenu = false;
+		if(Client()->State() == IClient::STATE_ONLINE)
+			SetActive(false);
 	}
 
 	// render debug information

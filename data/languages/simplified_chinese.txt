@@ -388,6 +388,12 @@ Spectator mode
 Spectators
 == 旁观者
 
+Sticky keys
+== 粘滞键
+
+Sticky keys are not supported yet
+== 暂不支持粘滞键
+
 Stop record
 == 停止录制
 

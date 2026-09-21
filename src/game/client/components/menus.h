@@ -144,6 +144,7 @@ protected:
 	int m_Popup;
 	bool m_ShowStart;
 	bool m_MenuActive;
+	bool m_PopupOpenedMenu = false;
 
 	bool m_DummyNamePlatePreview = false;
 
@@ -860,6 +861,7 @@ private:
 	CMenusSettingsControls m_MenusSettingsControls;
 	friend CMenusSettingsControls;
 	CMenusStart m_MenusStart;
+	friend class CControls;
 
 	static int GhostlistFetchCallback(const CFsFileInfo *pInfo, int IsDir, int StorageType, void *pUser);
 

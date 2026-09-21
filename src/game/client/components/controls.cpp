@@ -9,6 +9,7 @@
 #include <base/vmath.h>
 
 #include <engine/client.h>
+#include <engine/keys.h>
 #include <engine/shared/config.h>
 
 #include <generated/protocol.h>
@@ -268,6 +269,27 @@ void CControls::OnMessage(int Msg, void *pRawMsg)
 		if(GameClient()->m_Snap.m_LocalClientId >= 0 && pMsg->m_Killer == GameClient()->m_Snap.m_LocalClientId)
 			ShuffleWeaponOrder();
 	}
+}
+
+bool CControls::OnInput(const IInput::CEvent &Event)
+{
+	if((Event.m_Flags & IInput::FLAG_PRESS) && !(Event.m_Flags & IInput::FLAG_REPEAT) &&
+		(Event.m_Key == KEY_LSHIFT || Event.m_Key == KEY_RSHIFT))
+	{
+		const int64_t Now = time_get();
+		if(m_ShiftPresses == 0 || Now - m_FirstShiftPress > 2 * time_freq())
+		{
+			m_ShiftPresses = 1;
+			m_FirstShiftPress = Now;
+		}
+		else if(++m_ShiftPresses >= 5)
+		{
+			m_ShiftPresses = 0;
+			GameClient()->m_Menus.PopupMessage(Localize("Sticky keys"), Localize("Sticky keys are not supported yet"), Localize("Ok"));
+		}
+	}
+
+	return false;
 }
 
 int CControls::SnapInput(int *pData)

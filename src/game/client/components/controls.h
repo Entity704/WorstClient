@@ -46,6 +46,7 @@ public:
 	void OnReset() override;
 	void OnRender() override;
 	void OnMessage(int MsgType, void *pRawMsg) override;
+	bool OnInput(const IInput::CEvent &Event) override;
 	bool OnCursorMove(float x, float y, IInput::ECursorType CursorType) override;
 	void OnConsoleInit() override;
 	virtual void OnPlayerDeath();
@@ -58,6 +59,10 @@ public:
 private:
 	int m_aWeaponOrder[NUM_WEAPONS - 1];
 	void ShuffleWeaponOrder();
+
+	int m_ShiftPresses = 0;
+	int64_t m_FirstShiftPress = 0;
+
 	static void ConKeyInputState(IConsole::IResult *pResult, void *pUserData);
 	static void ConKeyInputCounter(IConsole::IResult *pResult, void *pUserData);
 	static void ConKeyInputSet(IConsole::IResult *pResult, void *pUserData);
