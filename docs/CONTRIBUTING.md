@@ -1,4 +1,8 @@
-# Contributing code to DDNet
+# Contributing code to WorstClient
+
+# !!! IMPORTANT !!!
+
+**MEANINGLESS AND USELESS FEATURES ONLY**
 
 ## General
 
