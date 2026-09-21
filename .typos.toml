@@ -14,6 +14,9 @@ extend-exclude = [
 	# tests with invalid words
 	"src/test/windows_test.cpp",
 	"src/test/str_test.cpp",
+
+	# Intentionally multilingual README (18 languages mixed per sentence)
+	"README.md",
 ]
 
 [default]
