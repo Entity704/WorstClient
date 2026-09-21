@@ -245,6 +245,7 @@ MACRO_CONFIG_INT(UiUnreadNews, ui_unread_news, 0, 0, 1, CFGFLAG_CLIENT | CFGFLAG
 MACRO_CONFIG_INT(GfxNoclip, gfx_noclip, 0, 0, 1, CFGFLAG_CLIENT | CFGFLAG_SAVE, "Disable clipping")
 
 // WorstClient
+MACRO_CONFIG_INT(WcWorstness, wc_worstness, 5000, 0, 10000, CFGFLAG_CLIENT | CFGFLAG_SAVE, "How bad WorstClient behaves (0 = not bad at all, 10000 = as bad as it gets)")
 MACRO_CONFIG_INT(WcFinishProtection, wc_finish_protection, 0, 0, 1, CFGFLAG_CLIENT | CFGFLAG_SAVE, "Automatically kill yourself when at risk of finishing a race")
 MACRO_CONFIG_INT(WcShowOff, wc_show_off, 0, 0, 1, CFGFLAG_CLIENT | CFGFLAG_SAVE, "Append \" ... I use WorstClient btw\" to chat messages")
 MACRO_CONFIG_INT(WcTrueKillProtection, wc_true_kill_protection, 0, 0, 1, CFGFLAG_CLIENT | CFGFLAG_SAVE, "Fall back to typing /kill in chat when the server blocks a kill")

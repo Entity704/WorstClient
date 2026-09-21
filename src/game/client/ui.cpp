@@ -1583,6 +1583,27 @@ bool CUi::DoScrollbarOption(const void *pId, int *pOption, const CUIRect *pRect,
 	return false;
 }
 
+bool CUi::DoScrollbarOptionCustom(const void *pId, int *pOption, const CUIRect *pRect, const char *pLabel, int Min, int Max)
+{
+	// The label and the scrollbar each get half of the rect, so the scrollbar stays in place no matter
+	// how long the label grows.
+	CUIRect Label, ScrollBar;
+	pRect->VSplitMid(&Label, &ScrollBar, std::min(10.0f, pRect->w * 0.05f));
+
+	const float FontSize = Label.h * CUi::ms_FontmodHeight * 0.8f;
+	DoLabel(&Label, pLabel, FontSize, TEXTALIGN_ML);
+
+	const float Range = Max - Min;
+	const float RelativeValue = Range == 0.0f ? 0.0f : (std::clamp(*pOption, Min, Max) - Min) / Range;
+	const int Value = std::round(Min + DoScrollbarH(pId, &ScrollBar, RelativeValue) * Range);
+	if(*pOption != Value)
+	{
+		*pOption = Value;
+		return true;
+	}
+	return false;
+}
+
 void CUi::RenderProgressBar(CUIRect ProgressBar, float Progress)
 {
 	const float Rounding = std::min(5.0f, ProgressBar.h / 2.0f);

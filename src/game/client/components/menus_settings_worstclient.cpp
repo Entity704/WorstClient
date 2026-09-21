@@ -40,6 +40,12 @@ void CMenus::RenderSettingsWorstClient(CUIRect MainView)
 	Ui()->DoLabel(&Label, Localize("Holy"), 16.0f, TEXTALIGN_ML);
 	LeftPanel.HSplitTop(HeadlineSpacing, nullptr, &LeftPanel);
 
+	// The config variable is an integer in 0.01% steps so that the percentage can show two decimals.
+	LeftPanel.HSplitTop(LineSize, &Button, &LeftPanel);
+	char aWorstnessLabel[64];
+	str_format(aWorstnessLabel, sizeof(aWorstnessLabel), Localize("Worstness: %.2f%%"), g_Config.m_WcWorstness / 100.0f);
+	Ui()->DoScrollbarOptionCustom(&g_Config.m_WcWorstness, &g_Config.m_WcWorstness, &Button, aWorstnessLabel, 0, 10000);
+
 	LeftPanel.HSplitTop(LineSize, &Button, &LeftPanel);
 	if(DoButton_CheckBox(&g_Config.m_WcFinishProtection, Localize("Finish Protection (auto suicide when at risk of finishing)"), g_Config.m_WcFinishProtection, &Button))
 	{

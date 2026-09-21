@@ -711,6 +711,10 @@ public:
 	float DoScrollbarV(const void *pId, const CUIRect *pRect, float Current);
 	float DoScrollbarH(const void *pId, const CUIRect *pRect, float Current, const ColorRGBA *pColorInner = nullptr);
 	bool DoScrollbarOption(const void *pId, int *pOption, const CUIRect *pRect, const char *pStr, int Min, int Max, const IScrollbarScale *pScale = &ms_LinearScrollbarScale, unsigned Flags = 0u, const char *pSuffix = "");
+	// Like DoScrollbarOption, but the label is passed in fully formatted by the caller. This allows
+	// showing a value that is finer grained than the integer steps of the scrollbar (for example a
+	// percentage with two decimals), and translating the whole label as a single string.
+	bool DoScrollbarOptionCustom(const void *pId, int *pOption, const CUIRect *pRect, const char *pLabel, int Min, int Max);
 
 	// progress bar
 	void RenderProgressBar(CUIRect ProgressBar, float Progress);
