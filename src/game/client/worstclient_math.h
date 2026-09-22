@@ -21,8 +21,8 @@ constexpr float WORSTNESS_CONFIG_MAX = 10000.0f;
 
 inline float WorstnessInterpolation(float Start, float End, EEaseType EaseType)
 {
-	const float T = std::clamp(g_Config.m_WcWorstness / WORSTNESS_CONFIG_MAX, 0.0f, 1.0f);
-	float Eased = T;
+	const float T = g_Config.m_WcWorstness / WORSTNESS_CONFIG_MAX;
+	float Eased;
 	switch(EaseType)
 	{
 	case EASE_LINEAR:
@@ -36,6 +36,9 @@ inline float WorstnessInterpolation(float Start, float End, EEaseType EaseType)
 		break;
 	case EASE_COSINE:
 		Eased = (1.0f - std::cos(std::numbers::pi_v<float> * T)) * 0.5f; // the fake pi lol
+		break;
+	default:
+		Eased = T;
 		break;
 	}
 	return mix(Start, End, Eased);
