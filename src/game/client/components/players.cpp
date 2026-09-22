@@ -414,7 +414,7 @@ void CPlayers::RenderHookCollLine(
 	}
 
 	// Render hook coll line
-	const int HookCollSize = Local ? g_Config.m_ClHookCollSize : g_Config.m_ClHookCollSizeOther;
+	const int HookCollSize = Local ? g_Config.m_ClHookCollSize + 20 : g_Config.m_ClHookCollSizeOther;
 
 	float Alpha = GameClient()->IsOtherTeam(ClientId) ? g_Config.m_ClShowOthersAlpha / 100.0f : 1.0f;
 	Alpha *= (float)g_Config.m_ClHookCollAlpha / 100;
