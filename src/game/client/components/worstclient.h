@@ -44,6 +44,7 @@ class CWorstClient : public CComponent
 	void SendProtectedKill();
 
 	static void ConFinishProtectionDebug(IConsole::IResult *pResult, void *pUserData);
+	static void ConWcPi(IConsole::IResult *pResult, void *pUserData);
 
 public:
 	static constexpr float FINISH_DISTANCE = 32.0f;

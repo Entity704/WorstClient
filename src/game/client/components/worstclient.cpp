@@ -221,6 +221,18 @@ void CWorstClient::UpdateFinishProtection()
 void CWorstClient::OnConsoleInit()
 {
 	Console()->Register("wc_finish_protection_debug", "", CFGFLAG_CLIENT, ConFinishProtectionDebug, this, "Print the current state of the finish protection");
+	Console()->Register("wc_pi", "f[value]", CFGFLAG_CLIENT, ConWcPi, this, "Value used as pi at runtime");
+}
+
+void CWorstClient::ConWcPi(IConsole::IResult *pResult, void *pUserData)
+{
+	CWorstClient *pThis = static_cast<CWorstClient *>(pUserData);
+	if(pResult->NumArguments() > 0)
+		pi = pResult->GetFloat(0);
+
+	char aBuf[64];
+	str_format(aBuf, sizeof(aBuf), "pi is now %f", pi);
+	pThis->Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "worstclient", aBuf);
 }
 
 void CWorstClient::ConFinishProtectionDebug(IConsole::IResult *pResult, void *pUserData)
