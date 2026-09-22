@@ -618,14 +618,13 @@ void CCharacter::PreTick()
 
 // WorstClient: fake lag spike, see CCharacter::Tick
 static constexpr int FAKE_LAG_INTERVAL_TICKS = 25; // one spike every ~N s
-static constexpr int FAKE_LAG_DURATION_TICKS = 10; // how long a spike lasts
 
 void CCharacter::Tick()
 {
 	// WorstClient: shove the predicted velocity in a random direction for a few ticks, so the tee keeps
 	// popping away from the server position until the next snapshot corrects it.
 	const int Tick = GameWorld()->GameTick();
-	if(Tick > 0 && Tick % FAKE_LAG_INTERVAL_TICKS < FAKE_LAG_DURATION_TICKS) {
+	if(Tick > 0 && Tick % FAKE_LAG_INTERVAL_TICKS < WorstnessInterpolation(0.0f, 25.0f, EASE_LINEAR)) {
 		float FakeLagVelBias = WorstnessInterpolation(0.0f, 16.0f, EASE_CUBIC_IN);
 		m_Core.m_Vel += vec2(random_float(-FakeLagVelBias, FakeLagVelBias), random_float(-FakeLagVelBias, FakeLagVelBias));
 	}
