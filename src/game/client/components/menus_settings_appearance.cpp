@@ -724,7 +724,7 @@ void CMenus::RenderSettingsAppearance(CUIRect MainView)
 
 		const int TileScale = 32.0f;
 
-		const int OwnHookCollSize = g_Config.m_ClHookCollSize + 20;
+		const int OwnHookCollSize = g_Config.m_ClHookCollSize + 40;
 
 		// Toggled via checkbox later, inverts some previews
 		static bool s_HookCollPressed = false;
