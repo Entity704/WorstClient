@@ -89,6 +89,7 @@ class CSound : public IEngineSound
 	std::atomic<float> m_ListenerPositionX = 0.0f;
 	std::atomic<float> m_ListenerPositionY = 0.0f;
 	std::atomic<int> m_SoundVolume = 100;
+	std::atomic<int> m_ClippingGainFixed = 256;
 	int m_MixingRate = 48000;
 
 	class IEngineGraphics *m_pGraphics = nullptr;
@@ -114,6 +115,7 @@ class CSound : public IEngineSound
 	bool DecodeWV(CSample &Sample, const void *pData, unsigned DataSize, const char *pContextName) const;
 
 	void UpdateVolume();
+	void UpdateClipping();
 
 public:
 	int Init() override REQUIRES(!m_SoundLock);

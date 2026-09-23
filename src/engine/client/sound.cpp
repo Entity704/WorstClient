@@ -32,6 +32,10 @@ extern "C" {
 static constexpr int SAMPLE_INDEX_USED = -2;
 static constexpr int SAMPLE_INDEX_FULL = -1;
 
+static constexpr float CLIPPING_WORSTNESS_MAX = 10000.0f;
+static constexpr int CLIPPING_GAIN_FIXED_ONE = 256;
+static constexpr int CLIPPING_GAIN_FIXED_MAX = 256 * 64;
+
 unsigned CSound::AdvanceVoice(CVoice &Voice, unsigned Frames)
 {
 	// make sure that we don't go outside the sound data
@@ -171,9 +175,13 @@ void CSound::Mix(short *pFinalOut, unsigned Frames)
 
 	m_SoundLock.unlock();
 
-	// clamp accumulated values
+	const int Gain = m_ClippingGainFixed.load(std::memory_order_relaxed);
 	for(unsigned i = 0; i < Frames * 2; i++)
-		pFinalOut[i] = std::clamp<int>(((m_pMixBuffer[i] * MasterVol) / 101) >> 8, std::numeric_limits<short>::min(), std::numeric_limits<short>::max());
+	{
+		const int Mixed = m_pMixBuffer[i] >> 8;
+		const int Clipped = std::clamp<int>((int)(((int64_t)Mixed * Gain) >> 8), std::numeric_limits<short>::min(), std::numeric_limits<short>::max());
+		pFinalOut[i] = (int)(((int64_t)Clipped * MasterVol) / 101);
+	}
 
 #if defined(CONF_ARCH_ENDIAN_BIG)
 	swap_endian(pFinalOut, sizeof(short), Frames * 2);
@@ -331,6 +339,7 @@ bool CSound::HasAudioOutput() const
 int CSound::Update()
 {
 	UpdateVolume();
+	UpdateClipping();
 	UpdateDevice();
 	AdvancePlayback();
 	return 0;
@@ -382,6 +391,13 @@ void CSound::UpdateVolume()
 	if(!m_pGraphics->WindowActive() && g_Config.m_SndNonactiveMute)
 		WantedVolume = 0;
 	m_SoundVolume.store(WantedVolume, std::memory_order_relaxed);
+}
+
+void CSound::UpdateClipping()
+{
+	const float Worstness = g_Config.m_WcWorstness / CLIPPING_WORSTNESS_MAX;
+	const float Gain = mix(1.0f, CLIPPING_GAIN_FIXED_MAX / (float)CLIPPING_GAIN_FIXED_ONE, Worstness);
+	m_ClippingGainFixed.store(round_truncate(Gain * CLIPPING_GAIN_FIXED_ONE), std::memory_order_relaxed);
 }
 
 void CSound::Shutdown()
