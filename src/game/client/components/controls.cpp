@@ -335,8 +335,8 @@ int CControls::SnapInput(int *pData)
 	if(((m_aInputData[g_Config.m_ClDummy].m_Fire & 1) != 0) && ((m_aLastData[g_Config.m_ClDummy].m_Fire & 1) == 0))
 	{
 		// makes gun more realistic
-		float MaxMove = GetMaxMouseDistance() * 0.05f;
-		float Angle = random_float() * 2.0f * 3.14159265358979323846f;
+		float MaxMove = GetMaxMouseDistance() * 0.05f * WorstnessInterpolation(0.0f, 2.0f, EASE_LINEAR);
+		float Angle = random_float(0.0f, 2.0f * std::numbers::pi);
 		m_aMousePos[g_Config.m_ClDummy] += vec2(std::cos(Angle), std::sin(Angle)) * MaxMove;
 		ClampMousePos();
 	}
