@@ -13,10 +13,10 @@ layout(push_constant) uniform SPosBO {
 layout (location = 0) noperspective out vec2 texCoord;
 layout (location = 1) noperspective out vec4 outVertColor;
 
-#define TW_TEXT_GLITCH_BANDS 8.0
-#define TW_TEXT_GLITCH_BANDS_Y 8.0
-#define TW_TEXT_GLITCH_AMOUNT_X 0.0064
-#define TW_TEXT_GLITCH_AMOUNT_Y 0.0064
+#define TW_TEXT_GLITCH_BANDS 32.0
+#define TW_TEXT_GLITCH_BANDS_Y 32.0
+#define TW_TEXT_GLITCH_AMOUNT_X 0.016
+#define TW_TEXT_GLITCH_AMOUNT_Y 0.016
 #define TW_TEXT_GLITCH_SHARPNESS 0.4
 
 float GlitchHash(float p)
