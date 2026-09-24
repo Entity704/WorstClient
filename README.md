@@ -1,107 +1,131 @@
 ![DDraceNetwork](./data/gui_logo.png)
 
-# WorstClient
+# wOrStClIeNt · 最爛クライアント · WorstClient
 
-The worst client WorstClient
+**ThE wOrSt DDNeT cLiEnT — этот клиент故意做爛，mais les vraies fonctions sont hanya tiga.**
 
-## Dependencies on Linux / macOS
+This README is mixed on purpose: almost every sentence blends **3+ of 18 languages**, with random camelCase and random 简繁. 功能重點只有三個 — *nur drei*, *たった三つ*, *hanya tiga*, *فقط ثلاث*.
 
-You can install the required libraries on your system, `touch CMakeLists.txt` and CMake will use the system-wide libraries by default. You can install all required dependencies and CMake on Debian or Ubuntu like this:
+---
 
-```sh
-sudo apt install build-essential cargo cmake git glslang-tools google-mock libavcodec-extra libavdevice-dev libavfilter-dev libavformat-dev libavutil-dev libcurl4-openssl-dev libfreetype6-dev libglew-dev libnotify-dev libogg-dev libopus-dev libopusfile-dev libpng-dev libsdl2-dev libsqlite3-dev libssl-dev libvulkan-dev libwavpack-dev libx264-dev ninja-build python3 rustc spirv-tools
+## cOnFiG / 設定 / Config
+
+| key | default | meaning |
+|-----|---------|---------|
+| `wc_finish_protection` | `0` | 通關保護 / Finish Protection — 自動 kill wenn du dabei bist zu finishen |
+| `wc_show_off` | `0` | 炫耀 / Show Off — chat 末尾追加 ` ... I use WorstClient btw` |
+| `wc_true_kill_protection` | `0` | 真·殺保護 / True Kill Protection — kill 被擋住時 fallback `say /kill` |
+| `wc_finish_protection_debug` | console | debug: 印出当前 pelindungan finish 狀態 |
+
+Settings file → **`settings_worstclient.cfg`**；open path → **Settings → WorstClient**（設定頁簽 / onglet / sekmе）。
+
+---
+
+## ThE ThReE fEaTuReS · 僅有的三嗰功能 · les trois seules fonctions
+
+WorstClient は DDNet の joke fork です，**però ci sono tre funzioni reali**，и их ровно три。
+
+### 1. Finish Protection / 通關保護 / Clearrchutz
+
+**Auto-suicide when you are about to finish — 有通関風險時自動自殺，lorsque vous risquez de terminer la course.**
+
+While a race is running online（線上比賽進行中；pas en démo / nicht Spectator / 観戦では無効）:
+
+1. 加載地圖時 cache todas las `TILE_FINISH` tiles — game layer + front layer 一起掃，**juntos con** front-layer。
+2. 計算預測 Tee 到最近終點的距離 — *distance au finish le plus proche*, *Entfernung zum nächsten Finish*。
+3. Wenn distance **&lt; 32 units / 32 單位 / 32 birim** → you are at risk, *estás en riesgo*, *вы в опасности*。
+4. Si distance **&lt; 256**, client **simulates the predicted tee for 10 ticks / 模擬 10 tick / 10 ticks simulieren**，採用 DDNet 服務器同款 5-point sampling（5 點采樣 / fünf Punkte）。
+5. Trigger 後執行 `kill` **ve** `say /kill` — *executes both*, *eksekusi keduanya*, *εκτελεί και τα δύο*。
+6. 凍結 Tee 不會被反覆擊殺 — *frozen tees are not killed repeatedly*, *gelée tee ne tue pas en boucle*。
+
+Debug console → `wc_finish_protection_debug`（印出 enabled / cached tiles / closest_finish / will_touch / at_risk / frozen）。
+
+UI label（界面文案 / libellé）: *Finish Protection (auto suicide when at risk of finishing)* — 通關保護（有通關的風險時自動自殺）。
+
+### 2. Show Off / 炫耀 / Se vanter
+
+**Append a brag suffix to every chat — 每條聊天自動追加炫耀後綴，ajoute un suffixe de frime à chaque message.**
+
+- 發出的消息会变成 / becomes / devient: `你打的字 ... I use WorstClient btw`
+- 以 `/` 開頭的指令 **完全不動** — *commands like `/pause` are never modified*, *Befehle bleiben unangetastet*, *komutlar değiştirilmez*。
+- 後綴放不下時 **整條不追加** — *if the suffix does not fit, nothing is appended*, *pas de troncature*, *não truncado*。
+- 兼容 0.6 / 0.7（Sixup）協議 — *works on both protocols*, *compatible avec*, *0.6 / 0.7 uyumlu*。
+
+UI label: *Show off（在末尾追加「 ... I use WorstClient btw」）*。
+
+### 3. True Kill Protection / 真·殺保護 / Vraie protection de kill
+
+**If the server blocks your kill, fall back to `/kill` — kill 被擋住時自動打 `/kill`，wenn der Server den Kill blockiert.**
+
+This is a **separate feature / 獨立功能 / fonction séparée**, *eine eigene Funktion*, *funzione indipendente* — not only a detail of Finish Protection, *非僅僅是通關保護的一部分*, *nicht nur ein Detail*。
+
+- 玩家主動 kill 後，client 會記住這次 kill — *records a pending kill*, *enregistre le kill envoyé*, *kayıtlı kill bekler*。
+- 若 **25 ticks / 25 週期 / 25 ticks lang** 內 tee 仍未死亡 → 伺服器多半擋住了 kill，*server probably blocked it*, *le serveur a bloqué*。
+- 此時自動 console 提示並執行 **`say /kill`** — *types `/kill` in chat*, *tippt `/kill` im Chat*, *チャットで `/kill`*，因為有些 server 只擋普通 kill message，*but still accepts chat commands*, *mais accepte encore les commandes*。
+- fallback 有 **1 second / 1 秒 / 1 seconde** cooldown — *no spam*, *pas de spam*, *スパムなし*。
+- 僅在線上、本地角色存在、且非旁觀時生效 — *online only*, *nur online*, *seulement en ligne*。
+- Finish Protection 觸發時也會走同一套 `kill` + `say /kill` 雙保險 — *same protected kill path*, *gleicher Pfad*, *同じ経路*。
+
+Console message: *Kill was blocked by the server, trying /kill*。
+
+UI label: *True Kill Protection (fall back to /kill if a kill gets blocked)* — 真·殺保護（kill 被擋住時自動 `/kill`）。
+
+---
+
+## HoW tO eNaBlE / 怎麼打開 / Comment activer
+
+Settings → **WorstClient** 頁簽 / onglet / sekme / scheda → checkboxes（複選框 / cases à cocher）:
+
 ```
-If your distribution doesn't ship with a `rustc` that is new enough, you can use `rustup` which automatically provides `rustc` 1.85.0 and above (this command removes `rustc` and reinstalls it as part of `rustup`.):
-```sh
-sudo apt install rustup
+wc_finish_protection 1
+wc_show_off 1
+wc_true_kill_protection 1
 ```
 
-In case the `rustc` dependency doesn't have the required version for any reason:
-```sh
-sudo apt install rustup-1.85
-```
+These `wc_*` variables are saved to **`settings_worstclient.cfg`**，與 `settings_ddnet.cfg` 分離 — *separated from upstream settings*, *getrennt von DDNet*, *ayrı dosyada saklanır*。
 
-On older distributions like Ubuntu 18.04 don't install `google-mock`, but instead set `-DDOWNLOAD_GTEST=ON` when building to get a more recent gtest/gmock version.
+---
 
-On older distributions `rustc` version might be too old, to get an up-to-date Rust compiler you can use [rustup](https://rustup.rs/) with stable channel instead or try the `rustc-mozilla` package.
+## MiXeD 18-LanGuAgE sAmPlEs（風格示例 / ejemplos / exemples）
 
-Or on CentOS, RedHat and AlmaLinux like this:
+每句話混 3+ 語言 — *each sentence mixes three or more tongues*, *chaque phrase mélange*, *her cümle karışır*:
 
-```sh
-sudo yum install cargo cmake ffmpeg-devel freetype-devel gcc gcc-c++ git glew-devel glslang gmock-devel gtest-devel libcurl-devel libnotify-devel libogg-devel libpng-devel libx264-devel ninja-build openssl-devel opus-devel opusfile-devel python3 rust SDL2-devel spirv-tools sqlite-devel vulkan-devel wavpack-devel
-```
+- Finish Protection 會 **aUtOmAtIcAlLy KiLl** your tee *wenn* vous êtes *sur le point de* terminer la carrera *y* el cliente envía `kill`。
+- Show Off **aPpEnDs** suffix *mais* les commandes `/` *bleiben* untouched *e* il testo *no* viene *troncato*。
+- True Kill Protection **fAlLs bAcK** to `say /kill` *si* le serveur *blokuje* ten kill *y* el cliente no espera *mais* de 25 ticks。
+- 這個客卢端故意做爛 UI — *l’UI tremble exprès*, *UI は壊れています*, *UI kasıtlı bozuk* — **tapi fitur nyata cuma tiga**。
+- Config 檔案叫 `settings_worstclient.cfg`，*open it* via Settings → WorstClient — *öffne die Datei*, *ファイルを開く*, *dosyayı aç*。
 
-Or on Fedora like this:
+---
 
-```sh
-sudo dnf install cargo cmake ffmpeg-devel freetype-devel gcc gcc-c++ git glew-devel glslang gmock-devel gtest-devel libcurl-devel libnotify-devel libogg-devel libpng-devel make ninja-build openssl-devel opus-devel opusfile-devel python SDL2-devel spirv-tools sqlite-devel vulkan-devel wavpack-devel x264-devel
-```
+## BuIlDiNg / 編譯 / Compilation
 
-Or on Arch Linux like this:
-
-```sh
-sudo pacman -S --needed base-devel cmake curl ffmpeg freetype2 git glew glslang gmock libnotify libpng ninja opusfile python rust sdl2 spirv-tools sqlite vulkan-headers vulkan-icd-loader wavpack x264
-```
-
-Or on Gentoo like this:
-
-```sh
-emerge --ask dev-build/ninja dev-db/sqlite dev-lang/rust-bin dev-libs/glib dev-libs/openssl dev-util/glslang dev-util/spirv-headers dev-util/spirv-tools media-libs/freetype media-libs/glew media-libs/libglvnd media-libs/libogg media-libs/libpng media-libs/libsdl2 media-libs/libsdl2[vulkan] media-libs/opus media-libs/opusfile media-libs/pnglite media-libs/vulkan-loader[layers] media-sound/wavpack media-video/ffmpeg net-misc/curl x11-libs/gdk-pixbuf x11-libs/libnotify
-```
-
-Or on Void Linux like this:
-
-```sh
-sudo xbps-install -S base-devel cargo cmake ffmpeg6-devel freetype-devel git glew-devel glslang gtest-devel libcurl-devel libnotify-devel libogg-devel libpng-devel ninja openssl-devel opus-devel opusfile-devel sqlite-devel SPIRV-Tools-devel vulkan-loader wavpack-devel x264-devel SDL2-devel
-```
-
-On macOS you can use [homebrew](https://brew.sh/) to install build dependencies like this:
-
-```sh
-brew install cmake ffmpeg freetype glew glslang googletest libpng molten-vk ninja opusfile rust SDL2 spirv-tools vulkan-headers wavpack x264
-```
-
-If you don't want to use the system libraries, you can pass the `-DPREFER_BUNDLED_LIBS=ON` parameter to cmake.
-
-DDNet requires additional libraries, some of which are bundled for the most common platforms (Windows, Mac, Linux, all x86 and x86\_64) for convenience and the official builds. The bundled libraries for official builds are now in the ddnet-libs submodule. Note that when you build and develop locally, you should ideally use your system's package manager to install the dependencies, instead of relying on ddnet-libs submodule, which does not contain all dependencies anyway (e.g. openssl, vulkan). See the previous section for how to get the dependencies. Alternatively see our [Building Guide](docs/BUILDING.md) for how to disable some features and their dependencies (for example, `-DVULKAN=OFF` won't require Vulkan).
-
-## Building on Linux and macOS
-
-To compile DDNet yourself, execute the following commands in the source root:
+Still DDNet codebase — *même base de code*, *gleiche Codebasis*, *同じコードベース*:
 
 ```sh
 cmake -Bbuild -GNinja
 cmake --build build
 ```
 
-## Building on Windows with the Visual Studio IDE
+Windows → Visual Studio CMake *ou* MSVC build tools；需要 C++ *et* Python 3 *y* Rust。
 
-Download and install some version of [Microsoft Visual Studio](https://www.visualstudio.com/) (At the time of writing, MSVS Community 2022) with **C++ support**.
+---
 
-You'll have to install both [Python 3](https://www.python.org/downloads/) and [Rust](https://rustup.rs/) as well.
+## 18 LaNgUaGeS uSeD / 使用的十八國語言
 
-Make sure the MSVC build tools, C++ CMake-Tools and the latest Windows SDK version appropriate to your windows version are selected in the installer.
+English · 中文（隨機簡繁）· 日本語 · 한국어 · Français · Deutsch · Español · Português · Русский · Italiano · Nederlands · Polski · Türkçe · العربية · Tiếng Việt · ไทย · Bahasa Indonesia · Ελληνικά
 
-Now open up your Project folder, Visual Studio should automatically detect and configure your project using CMake.
+*Almost every sentence above mixes ≥3 of these* — 並隨機大小寫 / camelCase，中文隨機簡繁。
 
-On your tools hotbar next to the triangular "Run" Button, you can now select what you want to start (e.g game-client or game-server) and build it.
+---
 
-## Building on Windows with standalone MSVC build tools
+## License
 
-First off you will need to install the following dependencies:
+Same as upstream DDNet — *voir* `license.txt`, *siehe*, *を参照*。
 
-- [MSVC Build Tools](https://visualstudio.microsoft.com/visual-cpp-build-tools/),
-- [Python 3](https://www.python.org/downloads/windows/),
-- [Rust](https://www.rust-lang.org/tools/install).
+---
 
-To compile with the Vulkan graphics backend (disabled by default), you also need to install the [Vulkan SDK](https://vulkan.lunarg.com/sdk/home).
-
-To compile and build DDNet on Windows, use your IDE of choice either with a CMake integration (e.g Visual Studio Code), or by ~~**deprecated**~~ using the CMake GUI.
-
-Configure CMake to use the MSVC Build Tools appropriate to your System by your IDE's instructions.
-
-If you're using Visual Studio Code, you can use the [CMake Tools](https://marketplace.visualstudio.com/items?itemName=ms-vscode.cmake-tools) extension to configure and build the project.
-
-You can then open the project folder in Visual Studio Code and press `Ctrl+Shift+P` to open the command palette, then search for `CMake: Configure`.
-
-This will open up a prompt for you to select a kit, select your `Visual Studio` version and save it. You can now use the GUI (bottom left) to compile and build your project.
+<sub>
+本 README 故意一句混多語 + 隨機簡繁 + 隨機大小寫 — porque el cliente se llama **wOrStClIeNt**。
+功能只有三個：**Finish Protection** + **Show Off** + **True Kill Protection**。其他都是 flavor / 風味 / Geschmack。
+</sub>
